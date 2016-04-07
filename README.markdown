@@ -231,13 +231,13 @@ and that you ended up with a token that is `abc12-34def`.
 Now let's say that you want to customize some parts of your maxscale
 installation.
 For example, you want your instance setup to have:
- - cachedir to be `/maxscale/cache`,
- - datadir to be `/maxscale/data`,
- - 4 threads instead of 2
- - the `server-id` set to 55
- - an additional binlog router option `binlogdir` set to `/maxscale/binlog`
- - a different password (of course! :) )
- - a master which is 10.0.0.10
+ * cachedir to be `/maxscale/cache`,
+ * datadir to be `/maxscale/data`,
+ * 4 threads instead of 2
+ * the `server-id` set to 55
+ * an additional binlog router option `binlogdir` set to `/maxscale/binlog`
+ * a different password (of course! :) )
+ * a master which is 10.0.0.10
 
 **Note:** It is not mandatory to set the `ensure`, `logdir`, `piddir`, `svcuser`, `svcgroup`,
 `errmsgsys_path` and `configfile` parameters as those are their defaults, but I like to set
@@ -377,15 +377,15 @@ For the example, let's continue to use the default instance to replicate from a
 master named `foo` and let's have anoter one for the master named `bar`.
 
 For example, you want your instance setup to have:
- - logdir to be: `/var/log/maxscale/<master_name>`,
- - cachedir to be `/maxscale/cache/<master_name>`,
- - datadir to be `/maxscale/data/<master_name>`,
- - piddir to be `/var/run/maxscale/<master_name>`,
- - configfile to be `/etc/maxscale/<master_name>.cfg`,
- - the `server-id` set to 55 and 66
- - an additional binlog router option `binlogdir` set to `/maxscale/binlog/<master_name>`
- - a different password (of course! :) )
- - foo master IP is 10.0.0.10 and bar master is 10.0.0.11
+ * logdir to be: `/var/log/maxscale/<master_name>`,
+ * cachedir to be `/maxscale/cache/<master_name>`,
+ * datadir to be `/maxscale/data/<master_name>`,
+ * piddir to be `/var/run/maxscale/<master_name>`,
+ * configfile to be `/etc/maxscale/<master_name>.cfg`,
+ * the `server-id` set to 55 and 66
+ * an additional binlog router option `binlogdir` set to `/maxscale/binlog/<master_name>`
+ * a different password (of course! :) )
+ * foo master IP is 10.0.0.10 and bar master is 10.0.0.11
 
 ```
 class { 'maxscale':
