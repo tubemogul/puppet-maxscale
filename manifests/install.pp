@@ -15,16 +15,16 @@ class maxscale::install {
 
 
         apt::source { 'maxscale':
-          location   => $repo_location,
-          release    => $maxscale::repo_release,
-          repos      => $maxscale::repo_repository,
-          key        => {
+          location => $repo_location,
+          release  => $maxscale::repo_release,
+          repos    => $maxscale::repo_repository,
+          key      => {
             'id'     => $maxscale::repo_fingerprint,
             'server' => $maxscale::repo_keyserver,
           },
-          include    => {
-            'deb'    => true,
-            'src'    => false,
+          include  => {
+            'deb' => true,
+            'src' => false,
           },
         }
 

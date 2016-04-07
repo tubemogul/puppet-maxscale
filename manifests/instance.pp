@@ -21,7 +21,7 @@ define maxscale::instance (
   $confdir = dirname($configfile)
 
   ensure_resource( 'file', path_tree([
-    $confdir, $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path 
+    $confdir, $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path
     ]), { ensure => directory, })
 
   file { $configfile:
@@ -35,8 +35,8 @@ define maxscale::instance (
   file { "/etc/init.d/${service_name}":
     ensure  => present,
     content => template('maxscale/maxscale.initd.erb'),
-    require => [ File [$configfile], ],
-    notify  => [ Service[$service_name], ],
+    require => File[$configfile],
+    notify  => Service[$service_name],
   }
 
   service { $service_name:
