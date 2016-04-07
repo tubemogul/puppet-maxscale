@@ -1,0 +1,7 @@
+<% @config.each do |section, items| -%>
+[<%= section %>]
+<% items.each do |item_key, item_value| -%>
+<%= item_key %>=<%=item_value%>
+<% end -%>
+
+<% end -%>
