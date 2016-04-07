@@ -82,6 +82,8 @@ describe 'maxscale' do
         let(:params) {{ :install_repository => false, }}
         let(:facts) {{
           :osfamily        => osfamily,
+          :lsbdistid       => 'Ubuntu',
+          :lsbdistcodename => 'trusty',
         }}
         it { should compile.with_all_deps }
 
