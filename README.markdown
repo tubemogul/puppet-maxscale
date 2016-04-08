@@ -7,20 +7,20 @@
 
 ####Table of Contents
 
-0. [Before you begin](#before-you-begin)
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
 3. [Setup - The basics of getting started with maxscale](#setup)
-    * [What maxscale affects](#what-maxscale-affects)
+    * [Before you begin](#before-you-begin)
+    * [What Maxscale affects](#what-maxscale-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with maxscale](#beginning-with-maxscale)
+    * [Beginning with Maxscale](#beginning-with-maxscale)
 4. [Usage - Configuration options and additional functionality](#usage)
     * [Basic example](#basic-example)
     * [Install without installing a specific repository](#install-without-installing-a-specific-repository)
     * [Using a custom package repository](#using-a-custom-package-repository)
     * [Specify a version](#specify-a-version)
     * [Working with a single instance](#working-with-a-single-instance)
-    * [Working in a multi-instances environment](#working-in-a-multi-instances-environment)
+    * [Working in a multi-instance environment](#working-in-a-multi-instance-environment)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
   * [Public classes](#public-classes)
   * [Private classes](#private-classes)
@@ -28,6 +28,37 @@
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
 
+
+##Overview
+
+This module installs and configures the MySQL/MariaDB's binlogs proxy called
+Maxscale.
+
+GitHub page of the Maxscale project: https://github.com/mariadb-corporation/MaxScale
+
+
+
+##Module Description
+
+The idea behind Maxscale is to have slaves that don't really care about which
+master is behind the replication endpoint. As it's a quite lightweight process, we
+use several of them on the same instance.
+
+In that spirit, this module allows you to manage several Maxscale instances on
+the same host very easily.
+
+The module installs the package (from MariaDB's official repositories or from
+your own repository if you specify a [`repo_custom_url`](#repo_custom_url)), configures and manages
+the one or multiple instances you define in the module's parameters.
+
+**Note:** We generally use Maxscale as a replication proxy. You should be able to
+use this module to manage other configuration cases but they have not been
+tested yet. So if you do and find issues, don't hesitate to file a bug on our
+github page: https://www.github.com/tubemogul/puppet-maxscale/issues
+
+
+
+##Setup
 
 ##Before you begin
 
@@ -43,55 +74,22 @@ the "Your Subscriptions" section.
 you can create an account at My Portal, sign the Evaluation Agreement,
 and try MariaDB Enterprise as an Evaluation User.
 
+###What Maxscale affects
 
-
-##Overview
-
-This module installs and configures the MySQL/MariaDB's binlogs proxy called
-Maxscale.
-
-GitHub page of the Maxscale project: https://github.com/mariadb-corporation/MaxScale
-
-
-
-##Module Description
-
-The idea behind Maxscale is to have slaves that don't really care about which
-master is behind the replication endpoint. As it's a quite lightway process, we
-use several of them on the same instance.
-
-In that spirit, this module allows you to manage several maxscale instances on
-the same host very easily.
-
-The module installs the package (from MariaDB's official repositories or from
-your own repository if you specify a [`repo_custom_url`](#repo_custom_url)), configures and manages
-the one or multiple instances you define in the module's parameters.
-
-**Note:** We use generally maxscale as a replication proxy. You should be able to
-use this module to manage other configuration cases but they have not been
-tested yet. So if you do and find issues, don't hesitate to file a bug on our
-github page: https://www.github.com/tubemogul/puppet-maxscale/issues
-
-
-
-##Setup
-
-###What maxscale affects
-
- * `/etc/init.d/maxscale`: used to manage the maxscale service if you setup the instance 'default'.
- * `/etc/init.d/maxscale_<instance_name>`: used to manage non-default maxscale instances.
+ * `/etc/init.d/maxscale`: used to manage the Maxscale service if you setup the instance 'default'.
+ * `/etc/init.d/maxscale_<instance_name>`: used to manage non-default Maxscale instances.
  * `/root/.maxadmin`: used to setup the authentication credentials to use with maxadmin. (You can change the directory of the maxadmin file using the [`maxadmin_config_root`](#maxadmin_config_root) parameter.
 
 Files and directories that you specify in your configuration:
- * the maxscale configuration files
- * the maxscale datadir. The parents directories will be created if they don't exist.
- * the maxscale cachedir. The parents directories will be created if they don't exist.
- * the maxscale logdir. The parents directories will be created if they don't exist.
- * the maxscale piddir. The parents directories will be created if they don't exist.
+ * the Maxscale configuration files
+ * the Maxscale datadir. The parent directories will be created if they don't exist.
+ * the Maxscale cachedir. The parent directories will be created if they don't exist.
+ * the Maxscale logdir. The parent directories will be created if they don't exist.
+ * the Maxscale piddir. The parent directories will be created if they don't exist.
  * the folder where the errmsg.sys is stored (generally `/var/lib/maxscale`).
 
 Specific to the Debian OS family:
- * `/etc/apt/sources.list.d/maxscale.list`: used to install the maxscale package repository (unless [`install_repository`](#install_repository) is set to `false`).
+ * `/etc/apt/sources.list.d/maxscale.list`: used to install the `maxscale` package repository (unless [`install_repository`](#install_repository) is set to `false`).
 
 ### Setup Requirements
 
@@ -100,12 +98,12 @@ The module requires:
  * [Puppetlabs stdlib](https://github.com/puppetlabs/puppetlabs-stdlib.git)
  * [Puppetlabs apt module](https://github.com/puppetlabs/puppetlabs-apt.git)
 
-###Beginning with maxscale
+###Beginning with Maxscale
 
-Before you start, make sure you read and completed the [Before you begin](#before-you-begin) section.
+Before you start, make sure you read and complete the [Before you begin](#before-you-begin) section.
 
 Once this is done, the module can be used out of the box directly, it just requires
-puppetlabs's apt module (if you want to install Maxscale APT repository) and stdlib to be in your modulepath.
+Puppetlabs's apt module (if you want to install Maxscale APT repository) and stdlib to be in your modulepath.
 
 To install (with all the dependencies - stdlib should come by default with your installation but make sure you run with the latest version to avoid issues):
 
@@ -127,7 +125,7 @@ of a full configuration when you have both - yes, I'm lazy ;-) ).
 
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`. You want to test out
-maxscale with only 1 instance on your server, use the Maxscale APT repository
+Maxscale with only 1 instance on your server, use the Maxscale APT repository
 and all the default parameters. Then your puppet code will just be:
 
 ```
@@ -165,7 +163,7 @@ maxscale::install_repository: false
 
 ###Using a custom package repository
 
-If you want to us a custom APT package repository, you can use the
+If you want to use a custom APT package repository, you can use the
 [`repo_custom_url`](#repo_custom_url) parameter.
 
 In this case you will want also to set the
@@ -173,7 +171,7 @@ In this case you will want also to set the
 fingerprint of your repository and you might also want to change the
 [`repo_keyserver`](#repo_keyserver) parameter to specify your own keyserver.
 
-Optionaly you can use the [`repo_repository`](#repo_repository) and [`repo_release`](#repo_release) to fit your
+Optionally you can use the [`repo_repository`](#repo_repository) and [`repo_release`](#repo_release) to fit your
 environment but the default values for those are pretty common values.
 
 ```
@@ -228,7 +226,7 @@ maxscale::repo_version: 1.2
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`.
 
-Now let's say that you want to customize some parts of your maxscale
+Now let's say that you want to customize some parts of your Maxscale
 installation.
 For example, you want your instance setup to have:
  * cachedir to be `/maxscale/cache`,
@@ -240,8 +238,8 @@ For example, you want your instance setup to have:
  * a master which is 10.0.0.10
 
 **Note:** It is not mandatory to set the `ensure`, `logdir`, `piddir`, `svcuser`, `svcgroup`,
-`errmsgsys_path` and `configfile` parameters as those are their defaults, but I like to set
-them just to clarify for the user that is not 100% familiar with the instance, what settings it has.
+`errmsgsys_path` and `configfile` parameters as they have default values, but I like to set
+them just to clarify for the user that is not 100% familiar with the instance, what values they have.
 
 ```
 class { 'maxscale':
@@ -363,13 +361,13 @@ maxscale::services_conf:
         protocol: MySQLBackend
 ```
 
-###Working in a multi-instances environment
+###Working in a multi-instance environment
 
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`.
 
-Now let's say that you want to replicate 2 data streams from 2 different master.
-To do that you will need 2 maxscale instances that you can in our case install
+Now let's say that you want to replicate 2 data streams from 2 different masters.
+To do that you will need 2 Maxscale instances that you can in our case install
 on the same sever. For each instance, we will use the same kind of parameters
 as previously.
 
@@ -603,13 +601,13 @@ maxscale::services_conf:
 
 ###Public classes
 
- * [`maxscale`](#class-maxscale): Installs, configures and manage one or serveral maxscale instances on a single server.
+ * [`maxscale`](#class-maxscale): Installs, configures and manages one or serveral maxscale instances on a single server.
 
 ###Private classes
 
- * `maxscale::install`: Installs the maxscale repository and the maxscale package.
+ * `maxscale::install`: Installs the maxscale repository and the `maxscale` package.
  * `maxscale::config`: Configures the .maxadmin file in /root.
- * `maxscale::install`: Installs the repository (if [`install_repository`](#install_repository) is set to `true`) and the maxscale package.
+ * `maxscale::install`: Installs the repository (if [`install_repository`](#install_repository) is set to `true`) and the `maxscale` package.
  * `maxscale::params`: Sets the default values that you can overwrite directly by setting the parameters of the `maxscale` class.
 
 ###Parameters
@@ -618,7 +616,7 @@ maxscale::services_conf:
 
 ##### `install_repository`
 
-This parameter is a boolean that defines if you will install the APT repository
+This parameter is a boolean that defines whether you will install the APT repository
 on your server or not.
 
 Default: `true`
@@ -626,7 +624,7 @@ Default: `true`
 ##### `token`
 
 Required if [`install_repository`](#install_repository) is set to `true` or [`repo_custom_url`](#repo_custom_url) is not set.
-It is used to construct to download url in the repository.
+It is used to construct the download url in the repository.
 
 For more information, see the [Before you begin](#before-you-begin) section.
 
@@ -662,7 +660,7 @@ Default: `main`
 
 Full fingerprint of the key used to authenticate the APT repository.
 
-For more informations on secure apt repository, see:
+For more information on secure apt repository, see:
 https://help.ubuntu.com/community/SecureApt
 
 Default: `13CFDE6DD9EE9784F41AF0F670E4618A8167EE24`
@@ -671,14 +669,14 @@ Default: `13CFDE6DD9EE9784F41AF0F670E4618A8167EE24`
 
 Keyserver to use to retrieve your repository key.
 
-For more informations on secure apt repository, see:
+For more information on secure apt repository, see:
 https://help.ubuntu.com/community/SecureApt
 
 Default: `hkp://keyserver.ubuntu.com:80`
 
 ##### `package_name`
 
-Name of the package to use to install maxscale.
+Name of the package to use to install Maxscale.
 
 Default: `maxscale`
 
@@ -709,17 +707,17 @@ This is a hash containing:
    configuration parameters corresponding to the instance.
  - Inside the configuration parameters, you have:
    - `ensure`: used to force a service to run or to stop
-   - `logdir`: will setup the --logdir parameter on the maxscale service (and will create the directory if doesn't exists)
-   - `cachedir`: will setup the --cachedir parameter on the maxscale service (and will create the directory if doesn't exists)
-   - `datadir`: will setup the --datadir parameter on the maxscale service (and will create the directory if doesn't exists)
-   - `piddir`: will setup the --piddir parameter on the maxscale service (and will create the directory if doesn't exists)
+   - `logdir`: will setup the --logdir parameter on the Maxscale service (and will create the directory if doesn't exists)
+   - `cachedir`: will setup the --cachedir parameter on the Maxscale service (and will create the directory if doesn't exists)
+   - `datadir`: will setup the --datadir parameter on the Maxscale service (and will create the directory if doesn't exists)
+   - `piddir`: will setup the --piddir parameter on the Maxscale service (and will create the directory if doesn't exists)
    - `svcuser`: OS user to run the service under
    - `svcgroup`: OS group to use to set on the directories managed by the service
-   - `errmsgsys_path`: will setup the --language parameter on the maxscale service (to specify the path of the errmsg.sys file)
+   - `errmsgsys_path`: will setup the --language parameter on the Maxscale service (to specify the path of the errmsg.sys file)
    - `configfile`: path of the configuration file to be created and used for your instance
-   - `config`: contains a hash which will define the content of the maxscale
-     configuration file. Each key represent a section, and each value is a has
-     which will render like: `key = value`
+   - `config`: contains a hash which will define the content of the Maxscale
+     configuration file. Each key represents a section, and each key has a
+     value, which is represented like: `key => value`
 
 Default:
 ```
@@ -791,10 +789,11 @@ Default:
 
 This module has been tested against Puppet 3.8 with Ubuntu clients with Maxscale 10.1.
 
-The spec tests work on puppet 3.x and 4.x.
+The spec tests work on Puppet 3.x and 4.x.
 
-To work on the Debian OS family servers, it requires the apt module from
-puppetlabs to be installed.
+To work on Debian OS family servers, it requires the apt module from
+Puppetlabs to be installed if you want to have this module manage your
+maxscale repository.
 
 The implementation for the installation on other operating systems has not been
 done yet but should be pretty straightforward to do. Just ask which one you want
