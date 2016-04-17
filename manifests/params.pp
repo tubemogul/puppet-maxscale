@@ -44,19 +44,18 @@ class maxscale::params {
         'Binlog_Service'   => {
           'type'           => 'service',
           'router'         => 'binlogrouter',
-          'servers'        => 'master',
-          'router_options' => 'mariadb10-compatibility=1,server-id=10',
+          'router_options' => 'mariadb10-compatibility=1,server-id=10,binlogdir=/var/cache/maxscale/binlog',
           'user'           => 'maxscale',
           'passwd'         => 'PLEASE_CHANGE_ME!1!',
           'version_string' => '10.1.12-MariaDB-1~trusty',
         },
-        'Binlog Listener'   => {
+        'Binlog_Listener'   => {
           'type'            => 'listener',
           'service'         => 'Binlog_Service',
           'protocol'        => 'MySQLClient',
           'port'            => 3310,
         },
-        'Debug Interface'   => {
+        'Debug_Interface'   => {
           'type'            => 'service',
           'router'          => 'debugcli',
         },
@@ -64,24 +63,30 @@ class maxscale::params {
           'type'   => 'service',
           'router' => 'cli',
         },
-        'Debug Listener'   => {
+        'Debug_Listener'   => {
           'type'           => 'listener',
           'service'        => 'Debug Interface',
           'protocol'       => 'telnetd',
           'address'        => '127.0.0.1',
           'port'           => 4442,
         },
-        'CLI Listener'   => {
+        'CLI_Listener'   => {
           'type'         => 'listener',
           'service'      => 'CLI',
           'protocol'     => 'maxscaled',
           'port'         => 6603,
         },
-        'master'     => {
-          'type'     => 'server',
-          'address'  => '127.0.0.1',
-          'port'     => 3306,
-          'protocol' => 'MySQLBackend',
+      },
+      master_ini                 => {
+        directory                => '/var/cache/maxscale/binlog',
+        content                  => {
+          'binlog_configuration' => {
+            'master_host'        => '127.0.0.1',
+            'master_port'        => 3306,
+            'master_user'        => 'maxscale',
+            'master_password'    => 'PLEASE_CHANGE_ME!2!',
+            'filestem'           => 'mysql-bin',
+          },
         },
       },
     },

@@ -56,6 +56,8 @@ use this module to manage other configuration cases but they have not been
 tested yet. So if you do and find issues, don't hesitate to file a bug on our
 github page: https://www.github.com/tubemogul/puppet-maxscale/issues
 
+For more information on the configuration of maxscale as a bilog proxy, see the official documentation: https://mariadb.com/kb/en/mariadb-enterprise/mariadb-maxscale/maxscale-as-a-replication-proxy/
+
 
 
 ##Setup
@@ -86,6 +88,8 @@ Files and directories that you specify in your configuration:
    Example: for a datadir set to `/maxscale/default/data`, `/maxscale/default`
    will have to exist prior to the class realization.
  * the Maxscale cachedir. The parent directories have to exist before that.
+ * the Maxscale master.ini directory which is basically the same that you set
+   your binlog directory to. The parent directories have to exist before that.
  * the Maxscale logdir. The parent directories have to exist before that.
  * the Maxscale piddir. The parent directories have to exist before that.
  * the folder where the errmsg.sys is stored (generally `/var/lib/maxscale`).
@@ -264,7 +268,6 @@ class { 'maxscale':
         'Binlog_Service'   => {
           'type'           => 'service',
           'router'         => 'binlogrouter',
-          'servers'        => 'master',
           'router_options' => 'mariadb10-compatibility=1,server-id=55,binlogdir=/maxscale/binlog',
           'user'           => 'maxscale',
           'passwd'         => 'AR3allyRe@llyG0odPwd...',
@@ -297,13 +300,19 @@ class { 'maxscale':
           'protocol'     => 'maxscaled',
           'port'         => 6603,
         },
-        'master'     => {
-          'type'     => 'server',
-          'address'  => '10.0.0.10',
-          'port'     => 3306,
-          'protocol' => 'MySQLBackend',
-        },
       },
+			'master_ini'               => {
+				'directory'              => '/maxscale/binlog',
+				'content'                => {
+					'binlog_configuration' => {
+						'master_host'        => '10.0.0.10',
+						'master_port'        => 3306,
+						'master_user'        => 'maxscale',
+						'master_password'    => 'PLEASE_CHANGE_ME!3!',
+						'filestem'           => 'mysql-bin',
+					},
+				},
+			},
     }
 }
 ```
@@ -329,7 +338,6 @@ maxscale::services_conf:
       Binlog_Service:
         type: service
         router: binlogrouter
-        servers: master
         router_options: 'mariadb10-compatibility=1,server-id=55,binlogdir=/maxscale/binlog'
         user: maxscale
         passwd: 'AR3allyRe@llyG0odPwd...'
@@ -356,11 +364,15 @@ maxscale::services_conf:
         service: CLI
         protocol: maxscaled
         port: 6603
-      master:
-        type: server
-        address: 10.0.0.10
-        port: 3306
-        protocol: MySQLBackend
+    master_ini:
+      director: /maxscale/binlog
+      content:
+        binlog_configuration:
+          master_host: 10.0.0.10
+          master_port: 3306
+          master_user: maxscale
+          master_password: PLEASE_CHANGE_ME!3!
+          filestem: mysql-bin
 ```
 
 ###Working in a multi-instance environment
@@ -404,7 +416,6 @@ class { 'maxscale':
         'Binlog_Service'   => {
           'type'           => 'service',
           'router'         => 'binlogrouter',
-          'servers'        => 'master',
           'router_options' => 'mariadb10-compatibility=1,server-id=55,binlogdir=/maxscale/binlog/foo',
           'user'           => 'maxscale',
           'passwd'         => 'AR3allyRe@llyG0odPwd...',
@@ -437,11 +448,17 @@ class { 'maxscale':
           'protocol'     => 'maxscaled',
           'port'         => 6603,
         },
-        'master'     => {
-          'type'     => 'server',
-          'address'  => '10.0.0.10',
-          'port'     => 3306,
-          'protocol' => 'MySQLBackend',
+      },
+      'master_ini'               => {
+        'directory'              => '/maxscale/binlog/foo',
+        'content'                => {
+          'binlog_configuration' => {
+            'master_host'        => '10.0.0.10',
+            'master_port'        => 3306,
+            'master_user'        => 'maxscale',
+            'master_password'    => 'PLEASE_CHANGE_ME!3!',
+            'filestem'           => 'mysql-bin',
+          },
         },
       },
     }
@@ -458,7 +475,6 @@ class { 'maxscale':
         'Binlog_Service'   => {
           'type'           => 'service',
           'router'         => 'binlogrouter',
-          'servers'        => 'master',
           'router_options' => 'mariadb10-compatibility=1,server-id=66,binlogdir=/maxscale/binlog/bar',
           'user'           => 'maxscale',
           'passwd'         => 'AR3allyRe@llyG0odPwd...',
@@ -491,11 +507,17 @@ class { 'maxscale':
           'protocol'     => 'maxscaled',
           'port'         => 6603,
         },
-        'master'     => {
-          'type'     => 'server',
-          'address'  => '10.0.0.11',
-          'port'     => 3306,
-          'protocol' => 'MySQLBackend',
+      },
+      'master_ini'               => {
+        'directory'              => '/maxscale/binlog/bar',
+        'content'                => {
+          'binlog_configuration' => {
+            'master_host'        => '10.0.0.11',
+            'master_port'        => 3306,
+            'master_user'        => 'maxscale',
+            'master_password'    => 'PLEASE_CHANGE_ME!3!',
+            'filestem'           => 'mysql-bin',
+          },
         },
       },
     }
@@ -519,7 +541,6 @@ maxscale::services_conf:
       Binlog_Service:
         type: service
         router: binlogrouter
-        servers: master
         router_options: 'mariadb10-compatibility=1,server-id=55,binlogdir=/maxscale/binlog/foo'
         user: maxscale
         passwd: 'AR3allyRe@llyG0odPwd...'
@@ -546,11 +567,15 @@ maxscale::services_conf:
         service: CLI
         protocol: maxscaled
         port: 6603
-      master:
-        type: server
-        address: 10.0.0.10
-        port: 3306
-        protocol: MySQLBackend
+    master_ini:
+      directory: /maxscale/binlog
+      content:
+        binlog_configuration:
+          master_host: 10.0.0.10
+          master_port: 3306
+          master_user: maxscale
+          master_password: PLEASE_CHANGE_ME!3!
+          filestem: mysql-bin
   bar:
     logdir: /var/log/maxscale/bar
     cachedir: /maxscale/cache/bar
@@ -563,7 +588,6 @@ maxscale::services_conf:
       Binlog_Service:
         type: service
         router: binlogrouter
-        servers: master
         router_options: 'mariadb10-compatibility=1,server-id=66,binlogdir=/maxscale/binlog/bar'
         user: maxscale
         passwd: 'AR3allyRe@llyG0odPwd...'
@@ -590,11 +614,15 @@ maxscale::services_conf:
         service: CLI
         protocol: maxscaled
         port: 6603
-      master:
-        type: server
-        address: 10.0.0.11
-        port: 3306
-        protocol: MySQLBackend
+    master_ini:
+      directory: /maxscale/binlog
+      content:
+        binlog_configuration:
+          master_host: 10.0.0.10
+          master_port: 3306
+          master_user: maxscale
+          master_password: PLEASE_CHANGE_ME!3!
+          filestem: mysql-bin
 ```
 
 
@@ -720,6 +748,10 @@ This is a hash containing:
    - `config`: contains a hash which will define the content of the Maxscale
      configuration file. Each key represents a section, and each key has a
      value, which is represented like: `key => value`
+   - `master_ini`: which is a hash contructed with:
+     - `directory`: the directory that will contain the master.ini file (should be the same as the binlog)
+     - `content`: contains a hash which will define the content of the master.ini
+       file. Each key represents a section, and each key has a value, which is represented like: `key => value`
 
 Default:
 ```
@@ -741,8 +773,7 @@ Default:
       'Binlog_Service'   => {
         'type'           => 'service',
         'router'         => 'binlogrouter',
-        'servers'        => 'master',
-        'router_options' => 'mariadb10-compatibility=1,server-id=10',
+        'router_options' => 'mariadb10-compatibility=1,server-id=10,binlogdir=/var/cache/maxscale/binlog',
         'user'           => 'maxscale',
         'passwd'         => 'PLEASE_CHANGE_ME!1!',
         'version_string' => '10.1.12-MariaDB-1~trusty',
@@ -774,11 +805,17 @@ Default:
         'protocol'     => 'maxscaled',
         'port'         => 6603,
       },
-      'master'     => {
-        'type'     => 'server',
-        'address'  => '127.0.0.1',
-        'port'     => 3306,
-        'protocol' => 'MySQLBackend',
+    },
+    'master_ini'               => {
+      'directory'              => '/var/cache/maxscale/binlog',
+      'content'                => {
+        'binlog_configuration' => {
+          'master_host'        => '127.0.0.1',
+          'master_port'        => 3306,
+          'master_user'        => 'maxscale',
+          'master_password'    => 'PLEASE_CHANGE_ME!3!',
+          'filestem'           => 'mysql-bin',
+        },
       },
     },
   }

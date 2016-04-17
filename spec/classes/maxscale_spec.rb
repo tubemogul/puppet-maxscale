@@ -99,19 +99,31 @@ describe 'maxscale' do
 
       describe "multi-instances maxscale on #{osfamily}" do
         let(:params) {{
-          :token               => 'abc123-456xyz',
-          :services_conf       => {
-            'default'          => {},
-            'foo'              => {
-              'ensure'         => 'stopped',
-              'logdir'         => '/var/log/maxscale_foo',
-              'cachedir'       => '/var/cache/maxscale_foo',
-              'datadir'        => '/var/data/maxscale_foo',
-              'piddir'         => '/var/run/maxscale_foo',
-              'errmsgsys_path' => '/var/lib/maxscale_foo',
-              'svcuser'        => 'nobody',
-              'svcgroup'       => 'nogroup',
-              'configfile'     => '/etc/maxscale/maxscale_foo.cnf',
+          :token                         => 'abc123-456xyz',
+          :services_conf                 => {
+            'default'                    => {},
+            'foo'                        => {
+              'ensure'                   => 'stopped',
+              'logdir'                   => '/var/log/maxscale_foo',
+              'cachedir'                 => '/var/cache/maxscale_foo',
+              'datadir'                  => '/var/data/maxscale_foo',
+              'piddir'                   => '/var/run/maxscale_foo',
+              'errmsgsys_path'           => '/var/lib/maxscale_foo',
+              'svcuser'                  => 'nobody',
+              'svcgroup'                 => 'nogroup',
+              'configfile'               => '/etc/maxscale/maxscale_foo.cnf',
+							'master_ini'               => {
+								'directory'              => '/var/cache/maxscale_foo/binlog',
+								'content'                => {
+									'binlog_configuration' => {
+										'master_host'        => '10.0.0.125',
+										'master_port'        => 3306,
+										'master_user'        => 'maxscale',
+										'master_password'    => 'PLEASE_CHANGE_ME!3!',
+										'filestem'           => 'mysql-bin',
+									},
+                },
+              },
             }
           }
         }}
