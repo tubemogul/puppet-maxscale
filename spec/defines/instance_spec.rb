@@ -53,16 +53,10 @@ describe 'maxscale::instance' do
         .with_hasstatus(true)\
         .that_subscribes_to('File[/etc/maxscale.cnf]')
     end
-    it { should contain_file('/etc').with_ensure('directory') }
     it { should_not contain_file('/etc/maxscale').with_ensure('directory') }
-    it { should contain_file('/var').with_ensure('directory') }
-    it { should contain_file('/var/cache').with_ensure('directory') }
     it { should contain_file('/var/cache/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/log').with_ensure('directory') }
     it { should contain_file('/var/log/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/run').with_ensure('directory') }
     it { should contain_file('/var/run/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/lib').with_ensure('directory') }
     it { should contain_file('/var/lib/maxscale').with_ensure('directory') }
   end
 
@@ -90,18 +84,11 @@ describe 'maxscale::instance' do
       }
     }
 
-    it { should contain_file('/etc').with_ensure('directory') }
     it { should contain_file('/etc/maxscale').with_ensure('directory') }
-    it { should contain_file('/var').with_ensure('directory') }
-    it { should contain_file('/var/cache').with_ensure('directory') }
     it { should contain_file('/var/cache/maxscale_foo').with_ensure('directory') }
-    it { should contain_file('/var/log').with_ensure('directory') }
     it { should contain_file('/var/log/maxscale_foo').with_ensure('directory') }
-    it { should contain_file('/var/run').with_ensure('directory') }
     it { should contain_file('/var/run/maxscale_foo').with_ensure('directory') }
-    it { should contain_file('/var/data').with_ensure('directory') }
     it { should contain_file('/var/data/maxscale_foo').with_ensure('directory') }
-    it { should contain_file('/var/lib').with_ensure('directory') }
     it { should contain_file('/var/lib/maxscale_foo').with_ensure('directory') }
 
     it do

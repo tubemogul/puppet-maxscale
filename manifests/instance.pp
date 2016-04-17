@@ -20,9 +20,13 @@ define maxscale::instance (
   }
   $confdir = dirname($configfile)
 
-  ensure_resource( 'file', path_tree([
+  ensure_resource( 'file', [
     $confdir, $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path
-    ]), { ensure => directory, })
+  ], {
+    ensure => directory,
+    owner  => $svcuser,
+    group  => $svcgroup,
+  })
 
   file { $configfile:
     ensure  => present,

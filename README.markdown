@@ -82,10 +82,12 @@ and try MariaDB Enterprise as an Evaluation User.
 
 Files and directories that you specify in your configuration:
  * the Maxscale configuration files
- * the Maxscale datadir. The parent directories will be created if they don't exist.
- * the Maxscale cachedir. The parent directories will be created if they don't exist.
- * the Maxscale logdir. The parent directories will be created if they don't exist.
- * the Maxscale piddir. The parent directories will be created if they don't exist.
+ * the Maxscale datadir. The parent directories have to exist before that.
+   Example: for a datadir set to `/maxscale/default/data`, `/maxscale/default`
+   will have to exist prior to the class realization.
+ * the Maxscale cachedir. The parent directories have to exist before that.
+ * the Maxscale logdir. The parent directories have to exist before that.
+ * the Maxscale piddir. The parent directories have to exist before that.
  * the folder where the errmsg.sys is stored (generally `/var/lib/maxscale`).
 
 Specific to the Debian OS family:
