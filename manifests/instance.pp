@@ -21,11 +21,18 @@ define maxscale::instance (
   $confdir = dirname($configfile)
 
   ensure_resource( 'file', [
-    $confdir, $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path
+    $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path
   ], {
     ensure => directory,
     owner  => $svcuser,
     group  => $svcgroup,
+  })
+
+  # The config file could be /etc so we do not want the service user to be the
+  # owner. Plus Maxscale don't need to write in it, just need the rights on the
+  # config file
+  ensure_resource( 'file', $confdir, {
+    ensure => directory,
   })
 
   file { $configfile:

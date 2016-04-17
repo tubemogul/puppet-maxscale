@@ -54,10 +54,11 @@ describe 'maxscale::instance' do
         .that_subscribes_to('File[/etc/maxscale.cnf]')
     end
     it { should_not contain_file('/etc/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/cache/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/log/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/run/maxscale').with_ensure('directory') }
-    it { should contain_file('/var/lib/maxscale').with_ensure('directory') }
+    it { should contain_file('/etc').with_ensure('directory') }
+    it { should contain_file('/var/cache/maxscale').with_ensure('directory').with_owner('maxscale') }
+    it { should contain_file('/var/log/maxscale').with_ensure('directory').with_owner('maxscale') }
+    it { should contain_file('/var/run/maxscale').with_ensure('directory').with_owner('maxscale') }
+    it { should contain_file('/var/lib/maxscale').with_ensure('directory').with_owner('maxscale') }
   end
 
   context 'definition of a non-default instance' do
