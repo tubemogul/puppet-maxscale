@@ -13,12 +13,23 @@ describe 'maxscale::instance' do
           'Binlog_Service'   => {
             'type'           => 'service',
             'router'         => 'binlogrouter',
-            'servers'        => 'master',
-            'router_options' => 'mariadb10-compatibility=1,server-id=10',
+            'router_options' => 'mariadb10-compatibility=1,server-id=10,binlogdir=/var/cache/maxscale/binlog',
             'user'           => 'maxscale',
             'passwd'         => 'PLEASE_CHANGE_ME!1!',
             'version_string' => '10.1.12-MariaDB-1~trusty',
-          }
+          },
+        },
+        'master_ini'               => {
+          'directory'              => '/var/cache/maxscale/binlog',
+          'content'                => {
+            'binlog_configuration' => {
+              'master_host'        => '127.0.0.1',
+              'master_port'        => 3306,
+              'master_user'        => 'maxscale',
+              'master_password'    => 'PLEASE_CHANGE_ME!2!',
+              'filestem'           => 'mysql-bin',
+            },
+          },
         },
       }
     }
@@ -47,6 +58,13 @@ describe 'maxscale::instance' do
         .with_content(/^type=service$/)
     end
     it do
+      should contain_file('/var/cache/maxscale/binlog/master.ini')\
+        .with_ensure('present')\
+        .with_require('[Class[Maxscale::Install]{:name=>"Maxscale::Install"}, File[/var/cache/maxscale/binlog]{:path=>"/var/cache/maxscale/binlog"}]')\
+        .with_content(/^\[binlog_configuration\]$/)\
+        .with_content(/^master_host=127.0.0.1$/)
+    end
+    it do
       should contain_service('maxscale')\
         .with_ensure('running')\
         .with_hasrestart(true)\
@@ -56,6 +74,7 @@ describe 'maxscale::instance' do
     it { should_not contain_file('/etc/maxscale').with_ensure('directory') }
     it { should contain_file('/etc').with_ensure('directory') }
     it { should contain_file('/var/cache/maxscale').with_ensure('directory').with_owner('maxscale') }
+    it { should contain_file('/var/cache/maxscale/binlog').with_ensure('directory').with_owner('maxscale') }
     it { should contain_file('/var/log/maxscale').with_ensure('directory').with_owner('maxscale') }
     it { should contain_file('/var/run/maxscale').with_ensure('directory').with_owner('maxscale') }
     it { should contain_file('/var/lib/maxscale').with_ensure('directory').with_owner('maxscale') }
@@ -82,11 +101,24 @@ describe 'maxscale::instance' do
             'type'          => 'service',
           }
         },
+				'master_ini'               => {
+					'directory'              => '/var/cache/maxscale_foo/binlog',
+					'content'                => {
+						'binlog_configuration' => {
+							'master_host'        => '10.0.0.125',
+							'master_port'        => 3306,
+							'master_user'        => 'maxscale',
+							'master_password'    => 'PLEASE_CHANGE_ME!3!',
+							'filestem'           => 'mysql-bin',
+						},
+					},
+				},
       }
     }
 
     it { should contain_file('/etc/maxscale').with_ensure('directory') }
     it { should contain_file('/var/cache/maxscale_foo').with_ensure('directory') }
+    it { should contain_file('/var/cache/maxscale_foo/binlog').with_ensure('directory') }
     it { should contain_file('/var/log/maxscale_foo').with_ensure('directory') }
     it { should contain_file('/var/run/maxscale_foo').with_ensure('directory') }
     it { should contain_file('/var/data/maxscale_foo').with_ensure('directory') }
@@ -115,6 +147,17 @@ describe 'maxscale::instance' do
         .with_content(/^threads=1$/)\
         .with_content(/^\[Binlog Listener\]$/)\
         .with_content(/^type=service$/)
+    end
+    it do
+      should contain_file('/var/cache/maxscale_foo/binlog/master.ini')\
+        .with_ensure('present')\
+        .with_require('[Class[Maxscale::Install]{:name=>"Maxscale::Install"}, File[/var/cache/maxscale_foo/binlog]{:path=>"/var/cache/maxscale_foo/binlog"}]')\
+        .with_content(/^\[binlog_configuration\]$/)\
+        .with_content(/^master_host=10.0.0.125$/)\
+        .with_content(/^master_port=3306$/)\
+        .with_content(/^master_user=maxscale$/)\
+        .with_content(/^master_password=PLEASE_CHANGE_ME!3!$/)\
+        .with_content(/^filestem=mysql-bin$/)
     end
     it do
       should contain_service('maxscale_foo')\

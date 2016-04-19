@@ -11,6 +11,7 @@ define maxscale::instance (
   $svcgroup       = 'maxscale',
   $errmsgsys_path = '/var/lib/maxscale',
   $configfile     = '/etc/maxscale.cnf',
+  $master_ini     = { directory => '/var/cache/maxscale/binlog', content => {}, },
 ){
   # The default instance is just named maxscale. The other ones have a prefix
   # with the name of the instance.
@@ -21,7 +22,8 @@ define maxscale::instance (
   $confdir = dirname($configfile)
 
   ensure_resource( 'file', [
-    $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path
+    $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path,
+    $master_ini['directory']
   ], {
     ensure => directory,
     owner  => $svcuser,
@@ -40,7 +42,19 @@ define maxscale::instance (
     content => template('maxscale/maxscale.cnf.erb'),
     owner   => $svcuser,
     group   => $svcgroup,
+    mode    => '0644',
     require => [ Class['maxscale::install'], File[$confdir], ],
+  }
+
+  if $master_ini['content'] != undef and $master_ini['directory'] != undef {
+    file { "${master_ini['directory']}/master.ini":
+      ensure  => present,
+      content => template('maxscale/master.ini.erb'),
+      owner   => $svcuser,
+      group   => $svcgroup,
+      mode    => '0640',
+      require => [ Class['maxscale::install'], File[$master_ini['directory']], ],
+    }
   }
 
   file { "/etc/init.d/${service_name}":
