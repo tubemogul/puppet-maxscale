@@ -1,6 +1,6 @@
 {
   "name": "TubeMogul-maxscale",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "TubeMogul Inc.",
   "summary": "Install and manage Maxscale instances",
   "license": "Apache-2.0",
