@@ -36,6 +36,7 @@ describe 'maxscale::instance' do
     it do
       should contain_file('/etc/init.d/maxscale')\
         .with_ensure('present')\
+        .with_mode('0755')\
         .with_require('File[/etc/maxscale.cnf]')\
         .with_notify('Service[maxscale]')\
         .with_content(/^processname=maxscale$/)\
@@ -127,6 +128,7 @@ describe 'maxscale::instance' do
     it do
       should contain_file('/etc/init.d/maxscale_foo')\
         .with_ensure('present')\
+        .with_mode('0755')\
         .with_require('File[/etc/maxscale/maxscale_foo.cnf]')\
         .with_notify('Service[maxscale_foo]')\
         .with_content(/^processname=maxscale_foo$/)\
