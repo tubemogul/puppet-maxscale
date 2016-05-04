@@ -399,6 +399,9 @@ For example, you want your instance setup to have:
  * a different password (of course! :) )
  * foo master IP is 10.0.0.10 and bar master is 10.0.0.11
 
+The debug listener service has been removed in this example as it's not
+mandatory.
+
 ```
 class { 'maxscale':
   token              => 'abc12-34def',
@@ -427,20 +430,9 @@ class { 'maxscale':
           'protocol'        => 'MySQLClient',
           'port'            => 3310,
         },
-        'Debug Interface'   => {
-          'type'            => 'service',
-          'router'          => 'debugcli',
-        },
         'CLI'      => {
           'type'   => 'service',
           'router' => 'cli',
-        },
-        'Debug Listener'   => {
-          'type'           => 'listener',
-          'service'        => 'Debug Interface',
-          'protocol'       => 'telnetd',
-          'address'        => '127.0.0.1',
-          'port'           => 4442,
         },
         'CLI Listener'   => {
           'type'         => 'listener',
@@ -484,28 +476,17 @@ class { 'maxscale':
           'type'            => 'listener',
           'service'         => 'Binlog_Service',
           'protocol'        => 'MySQLClient',
-          'port'            => 3310,
-        },
-        'Debug Interface'   => {
-          'type'            => 'service',
-          'router'          => 'debugcli',
+          'port'            => 3311,
         },
         'CLI'      => {
           'type'   => 'service',
           'router' => 'cli',
         },
-        'Debug Listener'   => {
-          'type'           => 'listener',
-          'service'        => 'Debug Interface',
-          'protocol'       => 'telnetd',
-          'address'        => '127.0.0.1',
-          'port'           => 4442,
-        },
         'CLI Listener'   => {
           'type'         => 'listener',
           'service'      => 'CLI',
           'protocol'     => 'maxscaled',
-          'port'         => 6603,
+          'port'         => 6604,
         },
       },
       'master_ini'               => {
@@ -550,18 +531,9 @@ maxscale::services_conf:
         service: Binlog_Service
         protocol: MySQLClient
         port: 3310
-      Debug Interface:
-        type: service
-        router: debugcli
       CLI:
         type: service
         router: cli
-      Debug Listener:
-        type: listener
-        service: 'Debug Interface'
-        protocol: telnetd
-        address: 127.0.0.1
-        port: 4442
       CLI Listener:
         type: listener
         service: CLI
@@ -596,24 +568,15 @@ maxscale::services_conf:
         type: listener
         service: Binlog_Service
         protocol: MySQLClient
-        port: 3310
-      Debug Interface:
-        type: service
-        router: debugcli
+        port: 3311
       CLI:
         type: service
         router: cli
-      Debug Listener:
-        type: listener
-        service: 'Debug Interface'
-        protocol: telnetd
-        address: 127.0.0.1
-        port: 4442
       CLI Listener:
         type: listener
         service: CLI
         protocol: maxscaled
-        port: 6603
+        port: 6604
     master_ini:
       directory: /maxscale/binlog
       content:
