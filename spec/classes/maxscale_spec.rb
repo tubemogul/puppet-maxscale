@@ -11,6 +11,7 @@ describe 'maxscale' do
           :osfamily        => osfamily,
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
+          :lsbdistrelease  => '14.04',
         }}
 
         it { should_not compile.with_all_deps }
@@ -25,6 +26,7 @@ describe 'maxscale' do
           :osfamily        => osfamily,
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
+          :lsbdistrelease  => '14.04',
         }}
 
         it { should compile.with_all_deps }
@@ -84,6 +86,7 @@ describe 'maxscale' do
           :osfamily        => osfamily,
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
+          :lsbdistrelease  => '14.04',
         }}
         it { should compile.with_all_deps }
 
@@ -131,6 +134,7 @@ describe 'maxscale' do
           :osfamily        => osfamily,
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
+          :lsbdistrelease  => '14.04',
         }}
         # The details of the test of Maxscale::Instance define are in
         # spec/defines/instance_spec.rb
@@ -147,6 +151,7 @@ describe 'maxscale' do
           :osfamily        => osfamily,
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
+          :lsbdistrelease  => '14.04',
         }}
 
         it do
