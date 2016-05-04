@@ -21,12 +21,15 @@
     * [Specify a version](#specify-a-version)
     * [Working with a single instance](#working-with-a-single-instance)
     * [Working in a multi-instance environment](#working-in-a-multi-instance-environment)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [To do after you did your setup](#to-do-after-you-did-your-setup)
+    * [Tell maxscale where to start when working as a replication proxy](#tell-maxscale-where-to-start-when-working-as-a-replication-proxy)
+    * [Setup a cron to cleanup the binlogs when using a replication proxy](#setup-a-cron-to-cleanup-the-binlogs-when-using-a-replication-proxy)
+6. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
   * [Public classes](#public-classes)
   * [Private classes](#private-classes)
   * [Parameters](#parameters)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+7. [Limitations - OS compatibility, etc.](#limitations)
+8. [Development - Guide for contributing to the module](#development)
 
 
 ##Overview
@@ -587,6 +590,46 @@ maxscale::services_conf:
           master_password: PLEASE_CHANGE_ME!3!
           filestem: mysql-bin
 ```
+
+##To do after you did your setup
+
+###Tell maxscale where to start when working as a replication proxy
+
+It is important to keep in mind that maxscale expects the master to have a
+a binlog file #1 (mysql-bin.000001) to start the replication automatically.
+If you want to download the binlogs from an server that has been running for a
+long time, you will need to set the master binlog position using the `CHANGE
+MASTER TO` command as specified in: https://mariadb.com/kb/en/mariadb-enterprise/mariadb-maxscale/maxscale-as-a-replication-proxy/#master-server-setupchange
+
+**Dirty hack:** let's say your binlog directory is `/maxscale/binlogs` and that
+you want your maxscale server to start at the binlog: `mysql-bin.734568`, you
+can create a file `/maxscale/binlogs/mysql-bin.734568` on the maxscale server
+(the file must be owned by the maxscale user) and restart the maxscale service.
+As long as the binlog is available on the master, maxscale will start
+downloading the binlogs from there.
+
+###Setup a cron to cleanup the binlogs when using a replication proxy
+
+There is no automatic cleanup of the binlogs currently in maxscale and this
+module don't have a binlog cleanup either.
+
+You can add one to your profile based on this example:
+
+```puppet
+cron {'binlog_cleanup_instance01':
+  command => 'find /maxscale/binlogs -type f -name \'mysql-bin.[0-9][0-9][0-9]*\' -mtime +6 -delete',
+  user    => 'maxscale',
+  hour    => '*',
+  minute  => '10',
+}
+```
+
+Why is it not implemented yet in this module?
+
+Your binlogs name can vary (depending on your master file name and the filestem
+parameter in your master.ini), and you can use maxscale for other usages than
+a replication proxy, so it seemed overkill for now to add a crontab to cleanup
+the binlogs.
 
 
 
