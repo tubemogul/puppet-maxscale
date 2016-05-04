@@ -60,6 +60,7 @@ define maxscale::instance (
   file { "/etc/init.d/${service_name}":
     ensure  => present,
     content => template('maxscale/maxscale.initd.erb'),
+    mode    => '0755',
     require => File[$configfile],
     notify  => Service[$service_name],
   }
