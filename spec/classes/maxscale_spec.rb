@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe 'maxscale' do
+
   context 'supported operating systems' do
+
     ['Debian'].each do |osfamily|
 
       describe "maxscale class without required parameters on #{osfamily}" do
@@ -12,6 +14,7 @@ describe 'maxscale' do
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
           :lsbdistrelease  => '14.04',
+          :puppetversion   => Puppet.version,
         }}
 
         it { should_not compile.with_all_deps }
@@ -27,6 +30,7 @@ describe 'maxscale' do
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
           :lsbdistrelease  => '14.04',
+          :puppetversion   => Puppet.version,
         }}
 
         it { should compile.with_all_deps }
@@ -87,6 +91,7 @@ describe 'maxscale' do
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
           :lsbdistrelease  => '14.04',
+          :puppetversion   => Puppet.version,
         }}
         it { should compile.with_all_deps }
 
@@ -135,6 +140,7 @@ describe 'maxscale' do
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
           :lsbdistrelease  => '14.04',
+          :puppetversion   => Puppet.version,
         }}
         # The details of the test of Maxscale::Instance define are in
         # spec/defines/instance_spec.rb
@@ -152,6 +158,7 @@ describe 'maxscale' do
           :lsbdistid       => 'Ubuntu',
           :lsbdistcodename => 'trusty',
           :lsbdistrelease  => '14.04',
+          :puppetversion   => Puppet.version,
         }}
 
         it do
@@ -176,4 +183,5 @@ describe 'maxscale' do
       it { expect { should contain_package('maxscale') }.to raise_error(Puppet::Error, /Nexenta not supported/) }
     end
   end
+
 end
