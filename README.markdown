@@ -115,7 +115,7 @@ Once this is done, the module can be used out of the box directly, it just requi
 Puppetlabs's apt module (if you want to install Maxscale APT repository) and stdlib to be in your modulepath.
 
 The module can be used out of the box directly, it just requires puppetlabs' apt
-module and its stdlib to be in your modulepath.
+module and puppetlabs' stdlib to be in your modulepath.
 
 To install:
 
