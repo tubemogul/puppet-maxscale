@@ -114,12 +114,21 @@ Before you start, make sure you read and complete the [Before you begin](#before
 Once this is done, the module can be used out of the box directly, it just requires
 Puppetlabs's apt module (if you want to install Maxscale APT repository) and stdlib to be in your modulepath.
 
-To install (with all the dependencies - stdlib should come by default with your installation but make sure you run with the latest version to avoid issues):
+The module can be used out of the box directly, it just requires puppetlabs' apt
+module and its stdlib to be in your modulepath.
+
+To install:
+
+```
+puppet module install TubeMogul/maxscale
+```
+
+Puppet will install the dependencies automatically, but if you want to install
+the dependencies 1 by 1, you can use this before:
 
 ```
 puppet module install puppetlabs/stdlib
 puppet module install puppetlabs/apt
-puppet module install TubeMogul/aerospike
 ```
 
 
