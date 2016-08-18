@@ -1,2 +1,9 @@
+2016-08-18 Release 1.0.1
+- fix some ports in the multi-instance example
+- Fix some spec issues appeared with newly used fact on the apt module
+- Add documentation to guide on the last steps of the process for creating a binlog proxy
+- Fixing missing execution rights on the init script
+- Fixing Json_pure dependency problems in the gemfile
+- Fix a mistake in the installation part of the documentation
 2016-04-26 Release 1.0.0
 - 1st version of the module
