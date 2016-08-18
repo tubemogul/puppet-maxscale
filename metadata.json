@@ -1,6 +1,6 @@
 {
   "name": "TubeMogul-maxscale",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "TubeMogul Inc.",
   "summary": "Install and manage Maxscale instances",
   "license": "Apache-2.0",
@@ -26,8 +26,8 @@
   ],
   "dependencies": [
     {
-      "name": "puppet/archive",
-      "version_requirement": ">= 0.0.1 < 1.0.0"
+      "name": "puppetlabs/apt",
+      "version_requirement": ">= 2.0.0 < 3.0.0"
     }
   ],
   "requirements": [
