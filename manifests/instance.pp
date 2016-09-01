@@ -21,17 +21,15 @@ define maxscale::instance (
   }
   $confdir = dirname($configfile)
 
-  $config_directories = [
+  ensure_resource( 'file', [
     $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path,
     $master_ini['directory']
-  ]
-  # create config directories after maxscale user exists
-  Class['maxscale::install'] -> File[$config_directories]
-  ensure_resource( 'file', $config_directories, {
+  ], {
     ensure => directory,
     owner  => $svcuser,
     group  => $svcgroup,
-  })
+    require => [ Class['maxscale::install'], ],
+})
 
   # The config file could be /etc so we do not want the service user to be the
   # owner. Plus Maxscale don't need to write in it, just need the rights on the
