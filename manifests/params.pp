@@ -65,7 +65,7 @@ class maxscale::params {
         },
         'Debug_Listener'   => {
           'type'           => 'listener',
-          'service'        => 'Debug Interface',
+          'service'        => 'Debug_Interface',
           'protocol'       => 'telnetd',
           'address'        => '127.0.0.1',
           'port'           => 4442,

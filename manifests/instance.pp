@@ -28,7 +28,8 @@ define maxscale::instance (
     ensure => directory,
     owner  => $svcuser,
     group  => $svcgroup,
-  })
+    require => [ Class['maxscale::install'], ],
+})
 
   # The config file could be /etc so we do not want the service user to be the
   # owner. Plus Maxscale don't need to write in it, just need the rights on the
