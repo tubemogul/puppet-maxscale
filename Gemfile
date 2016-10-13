@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
 group :test do
   gem "json_pure", '2.0.1' if RUBY_VERSION < '2.0'
@@ -15,12 +15,4 @@ end
 group :development do
   gem "travis"
   gem "travis-lint"
-  gem "vagrant-wrapper"
-  gem "puppet-blacksmith"
-  gem "guard-rake"
-end
-
-group :development, :system_tests do
-  gem "beaker"
-  gem "beaker-rspec"
 end
