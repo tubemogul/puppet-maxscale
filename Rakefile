@@ -1,53 +1,32 @@
-require 'puppet/version'
-# Does not work with Puppet <= 3.5
-# Seems the same error as: https://github.com/maestrodev/puppet-blacksmith/issues/14
-require 'puppet/vendor/semantic/lib/semantic' unless Puppet.version.to_f <3.6
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
-require 'puppet-syntax/tasks/puppet-syntax'
+require 'metadata-json-lint/rake_task'
 
-# These gems aren't always present, for instance
-# on Travis with --without development
-begin
-  require 'puppet_blacksmith/rake_tasks'
-rescue LoadError
+if RUBY_VERSION >= '1.9'
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
 end
 
-Rake::Task[:lint].clear
-
+PuppetLint.configuration.send('disable_80chars')
 PuppetLint.configuration.relative = true
-PuppetLint.configuration.send("disable_80chars")
-PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
-PuppetLint.configuration.fail_on_warnings = true
+PuppetLint.configuration.ignore_paths = ['spec/**/*.pp', 'pkg/**/*.pp']
 
-# Forsake support for Puppet 2.6.2 for the benefit of cleaner code.
-# http://puppet-lint.com/checks/class_parameter_defaults/
-PuppetLint.configuration.send('disable_class_parameter_defaults')
-# http://puppet-lint.com/checks/class_inherits_from_params_class/
-PuppetLint.configuration.send('disable_class_inherits_from_params_class')
-
-exclude_paths = [
-  "bundle/**/*",
-  "pkg/**/*",
-  "vendor/**/*",
-  "spec/**/*",
-]
-PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetSyntax.exclude_paths = exclude_paths
-
-desc "Run acceptance tests"
-RSpec::Core::RakeTask.new(:acceptance) do |t|
-  t.pattern = 'spec/acceptance'
+desc 'Validate manifests, templates, and ruby files'
+task :validate do
+  Dir['manifests/**/*.pp'].each do |manifest|
+    sh "puppet parser validate --noop #{manifest}"
+  end
+  Dir['spec/**/*.rb', 'lib/**/*.rb'].each do |ruby_file|
+    sh "ruby -c #{ruby_file}" unless ruby_file =~ %r{spec/fixtures}
+  end
+  Dir['templates/**/*.erb'].each do |template|
+    sh "erb -P -x -T '-' #{template} | ruby -c"
+  end
 end
 
-# task :metadata do
-#   sh "metadata-json-lint metadata.json"
-# end
-
-desc "Run syntax, lint, and spec tests."
-task :test => [
-  :syntax,
-  :lint,
-  :spec,
-#  :metadata,
-]
+desc 'Run metadata_lint, lint, validate, and spec tests.'
+task :test do
+  [:metadata_lint, :lint, :validate, :spec].each do |test|
+    Rake::Task[test].invoke
+  end
+end
