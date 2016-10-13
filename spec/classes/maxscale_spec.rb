@@ -59,7 +59,7 @@ describe 'maxscale' do
 
         it { should create_class('maxscale') }
         it { should contain_class('maxscale::params') }
-        it { should contain_class('maxscale::install').that_comes_before('maxscale::config') }
+        it { should contain_class('maxscale::install').that_comes_before('Class[maxscale::config]') }
         it { should contain_class('maxscale::config') }
 
         it do
@@ -141,7 +141,7 @@ describe 'maxscale' do
 
         it { should create_class('maxscale') }
         it { should contain_class('maxscale::params') }
-        it { should contain_class('maxscale::install').that_comes_before('maxscale::config') }
+        it { should contain_class('maxscale::install').that_comes_before('Class[maxscale::config]') }
         it { should contain_class('maxscale::config') }
 
         case osfamily

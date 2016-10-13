@@ -35,7 +35,9 @@ class maxscale (
 
   if $install_repository == true {
     if $repo_custom_url == undef or $repo_custom_url == '' {
-      validate_re("$token", '^[0-9a-zA-Z\-]+$', 'You need to provide a valid token. See https://github.com/tubemogul/puppet-maxscale#before-you-begin for more details.')
+      # From stdlib doc: Compilation terminates if the first argument is not a string. Always use quotes to force stringification
+      # Dirty hack to avoid only_variable_string lint issue
+      validate_re("-${token}", '^-[0-9a-zA-Z\-]+$', 'You need to provide a valid token. See https://github.com/tubemogul/puppet-maxscale#before-you-begin for more details.')
     }
   }
 
