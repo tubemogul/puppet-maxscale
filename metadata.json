@@ -1,6 +1,6 @@
 {
   "name": "TubeMogul-maxscale",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": "TubeMogul Inc.",
   "summary": "Install and manage Maxscale instances",
   "license": "Apache-2.0",
@@ -9,20 +9,11 @@
   "issues_url": "https://github.com/tubemogul/puppet-maxscale/issues",
   "tags": [ "maxscale", "database", "mariadb", "mysql", "binlog" ],
   "operatingsystem_support": [
-    {
-      "operatingsystem": "Ubuntu",
-      "operatingsystemrelease":
-      [
-        "12.04","14.04","16.04"
-      ]
-    },
-    {
-      "operatingsystem": "Debian",
-      "operatingsystemrelease":
-      [
-        "6","7","8"
-      ]
-    }
+    { "operatingsystem": "Ubuntu", "operatingsystemrelease": [ "12.04","14.04","16.04" ] },
+    { "operatingsystem": "Debian", "operatingsystemrelease": [ "6","7","8" ] },
+    { "operatingsystem": "CentOS", "operatingsystemrelease": [ "6" ] },
+    {"operatingsystem": "OracleLinux", "operatingsystemrelease": [ "6" ] },
+    {"operatingsystem": "RedHat", "operatingsystemrelease": [ "6" ] }
   ],
   "dependencies": [
     {
