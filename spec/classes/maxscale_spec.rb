@@ -4,18 +4,29 @@ describe 'maxscale' do
 
   context 'supported operating systems' do
 
-    ['Debian'].each do |osfamily|
+    ['Debian','RedHat'].each do |osfamily|
 
       describe "maxscale class without required parameters on #{osfamily}" do
         let(:params) {{
         }}
-        let(:facts) {{
-          :osfamily        => osfamily,
-          :lsbdistid       => 'Ubuntu',
-          :lsbdistcodename => 'trusty',
-          :lsbdistrelease  => '14.04',
-          :puppetversion   => Puppet.version,
-        }}
+        case osfamily
+        when 'Debian'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'Ubuntu',
+            :lsbdistid       => 'Ubuntu',
+            :lsbdistcodename => 'trusty',
+            :lsbdistrelease  => '14.04',
+            :puppetversion   => Puppet.version,
+          }}
+        when 'RedHat'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'CentOS',
+            :operatingsystemmajrelease => '6',
+            :puppetversion   => Puppet.version,
+          }}
+        end
 
         it { should_not compile.with_all_deps }
         it { expect { should contain_package('maxscale') }.to raise_error(Puppet::Error, /You need to provide a valid token. See https:\/\/github.com\/tubemogul\/puppet-maxscale#before-you-begin for more details./) }
@@ -25,13 +36,24 @@ describe 'maxscale' do
         let(:params) {{
           :token => 'abc123-456xyz',
         }}
-        let(:facts) {{
-          :osfamily        => osfamily,
-          :lsbdistid       => 'Ubuntu',
-          :lsbdistcodename => 'trusty',
-          :lsbdistrelease  => '14.04',
-          :puppetversion   => Puppet.version,
-        }}
+        case osfamily
+        when 'Debian'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'Ubuntu',
+            :lsbdistid       => 'Ubuntu',
+            :lsbdistcodename => 'trusty',
+            :lsbdistrelease  => '14.04',
+            :puppetversion   => Puppet.version,
+          }}
+        when 'RedHat'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'CentOS',
+            :operatingsystemmajrelease => '6',
+            :puppetversion   => Puppet.version,
+          }}
+        end
 
         it { should compile.with_all_deps }
 
@@ -41,14 +63,25 @@ describe 'maxscale' do
         it { should contain_class('maxscale::config') }
 
         it do
-          should contain_apt__source('maxscale')\
-            .with_location('http://downloads.mariadb.com/enterprise/abc123-456xyz/mariadb-maxscale/latest/ubuntu')\
-            .with_release('trusty')\
-            .with_repos('main')\
-            .that_notifies('Class[apt::update]')
+          case osfamily
+          when 'Debian'
+            should contain_apt__source('maxscale')\
+              .with_location('http://downloads.mariadb.com/enterprise/abc123-456xyz/mariadb-maxscale/latest/ubuntu')\
+              .with_release('trusty')\
+              .with_repos('main')\
+              .that_notifies('Class[apt::update]')
+          when 'RedHat'
+            should contain_yumrepo('maxscale')\
+              .with_baseurl('http://downloads.mariadb.com/enterprise/abc123-456xyz/mariadb-maxscale/latest/centos/6/x86_64')
+          end
         end
 
-        it { should contain_package('maxscale').with_ensure('present').that_requires('Class[apt::update]') }
+        case osfamily
+        when 'Debian'
+          it { should contain_package('maxscale').with_ensure('present').that_requires('Class[apt::update]') }
+        when 'RedHat'
+          it { should contain_package('maxscale').with_ensure('present').that_requires('Yumrepo[maxscale]') }
+        end
 
         it do
           should contain_file('/root/.maxadmin')\
@@ -84,15 +117,26 @@ describe 'maxscale' do
             .that_subscribes_to('File[/etc/init.d/maxscale]')
         end
       end
-      describe "do not install repository" do
+      describe "do not install repository on #{osfamily}" do
         let(:params) {{ :install_repository => false, }}
-        let(:facts) {{
-          :osfamily        => osfamily,
-          :lsbdistid       => 'Ubuntu',
-          :lsbdistcodename => 'trusty',
-          :lsbdistrelease  => '14.04',
-          :puppetversion   => Puppet.version,
-        }}
+        case osfamily
+        when 'Debian'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'Ubuntu',
+            :lsbdistid       => 'Ubuntu',
+            :lsbdistcodename => 'trusty',
+            :lsbdistrelease  => '14.04',
+            :puppetversion   => Puppet.version,
+          }}
+        when 'RedHat'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'CentOS',
+            :operatingsystemmajrelease => '6',
+            :puppetversion   => Puppet.version,
+          }}
+        end
         it { should compile.with_all_deps }
 
         it { should create_class('maxscale') }
@@ -100,7 +144,12 @@ describe 'maxscale' do
         it { should contain_class('maxscale::install').that_comes_before('maxscale::config') }
         it { should contain_class('maxscale::config') }
 
-        it { should_not contain_apt__source('maxscale') }
+        case osfamily
+        when 'Debian'
+          it { should_not contain_apt__source('maxscale') }
+        when 'RedHat'
+          it { should_not contain_yumrepo('maxscale') }
+        end
 
         it { should contain_package('maxscale').with_ensure('present') }
       end
@@ -135,13 +184,24 @@ describe 'maxscale' do
             }
           }
         }}
-        let(:facts) {{
-          :osfamily        => osfamily,
-          :lsbdistid       => 'Ubuntu',
-          :lsbdistcodename => 'trusty',
-          :lsbdistrelease  => '14.04',
-          :puppetversion   => Puppet.version,
-        }}
+        case osfamily
+        when 'Debian'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'Ubuntu',
+            :lsbdistid       => 'Ubuntu',
+            :lsbdistcodename => 'trusty',
+            :lsbdistrelease  => '14.04',
+            :puppetversion   => Puppet.version,
+          }}
+        when 'RedHat'
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'RedHat',
+            :operatingsystemmajrelease => '6',
+            :puppetversion   => Puppet.version,
+          }}
+        end
         # The details of the test of Maxscale::Instance define are in
         # spec/defines/instance_spec.rb
         it { should contain_Maxscale__Instance('default') }
@@ -150,22 +210,42 @@ describe 'maxscale' do
 
       # This will change based on the os family
       describe "maxscale repo install with custom url repository on #{osfamily}" do
-        let(:params) {{
-          :repo_custom_url => 'https://my.company.repo/ubuntu',
-        }}
-        let(:facts) {{
-          :osfamily        => osfamily,
-          :lsbdistid       => 'Ubuntu',
-          :lsbdistcodename => 'trusty',
-          :lsbdistrelease  => '14.04',
-          :puppetversion   => Puppet.version,
-        }}
+        case osfamily
+        when 'Debian'
+          let(:params) {{
+            :repo_custom_url => 'https://my.company.repo/ubuntu',
+          }}
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'Ubuntu',
+            :lsbdistid       => 'Ubuntu',
+            :lsbdistcodename => 'trusty',
+            :lsbdistrelease  => '14.04',
+            :puppetversion   => Puppet.version,
+          }}
+        when 'RedHat'
+          let(:params) {{
+            :repo_custom_url => 'https://my.company.repo/centos',
+          }}
+          let(:facts) {{
+            :osfamily        => osfamily,
+            :operatingsystem => 'CentOS',
+            :operatingsystemmajrelease => '6',
+            :puppetversion   => Puppet.version,
+          }}
+        end
 
         it do
-          should contain_apt__source('maxscale')\
-            .with_location('https://my.company.repo/ubuntu')\
-            .with_release('trusty')\
-            .with_repos('main')
+          case osfamily
+	  when 'Debian'
+            should contain_apt__source('maxscale')\
+              .with_location('https://my.company.repo/ubuntu')\
+              .with_release('trusty')\
+              .with_repos('main')
+          when 'RedHat'
+            should contain_yumrepo('maxscale')\
+              .with_baseurl('https://my.company.repo/centos')
+          end
         end
         it { should contain_package('maxscale').with_ensure('present') }
       end

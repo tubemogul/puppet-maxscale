@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'maxscale::instance' do
   context 'definition of the default instance' do
+    let (:facts) {{ :osfamily => 'Debian',}}
     let (:title) { 'default' }
     let (:params) {
       {
@@ -82,6 +83,7 @@ describe 'maxscale::instance' do
   end
 
   context 'definition of a non-default instance' do
+    let (:facts) {{ :osfamily => 'Debian',}}
     let (:title) { 'foo' }
     let (:params) {
       {

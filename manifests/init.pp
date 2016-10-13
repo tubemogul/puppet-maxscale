@@ -6,6 +6,7 @@ class maxscale (
   $token = undef,
   # Required if no token is specified. Use that if you want to download the package from a custom repository
   $repo_custom_url = undef,
+  $repo_os = $maxscale::params::repo_os,
   $repo_version = $maxscale::params::repository_version,
   $repo_release = $maxscale::params::repo_release,
   $repo_repository = $maxscale::params::repo_repository,
@@ -34,7 +35,7 @@ class maxscale (
 
   if $install_repository == true {
     if $repo_custom_url == undef or $repo_custom_url == '' {
-      validate_re($token, '^[0-9a-zA-Z\-]+$', 'You need to provide a valid token. See https://github.com/tubemogul/puppet-maxscale#before-you-begin for more details.')
+      validate_re("$token", '^[0-9a-zA-Z\-]+$', 'You need to provide a valid token. See https://github.com/tubemogul/puppet-maxscale#before-you-begin for more details.')
     }
   }
 
