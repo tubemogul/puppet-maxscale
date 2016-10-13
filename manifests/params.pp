@@ -28,7 +28,7 @@ class maxscale::params {
       $repo_keyserver   = ''
       $repo_release     = ''
       if $::operatingsystem == 'RedHat' {
-        $_os            = "rhel"
+        $_os            = 'rhel'
       } else {
         $_os            = downcase($::operatingsystem)
       }

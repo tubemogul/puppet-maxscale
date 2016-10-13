@@ -1,15 +1,23 @@
 source ENV['GEM_SOURCE'] || 'https://rubygems.org'
 
-group :test do
-  gem "json_pure", '2.0.1' if RUBY_VERSION < '2.0'
-  gem "rake"
-  gem "puppet", ENV['PUPPET_VERSION'] || '~> 3.8.4'
-  gem "rspec-core", '< 3.2' if RUBY_VERSION < '1.9'
-  gem "puppet-lint"
-  gem "rspec-puppet", :git => 'https://github.com/rodjek/rspec-puppet.git'
-  gem "puppet-syntax"
-  gem "puppetlabs_spec_helper"
-  gem "metadata-json-lint"
+puppetversion = ENV.key?('PUPPET_VERSION') ? ENV['PUPPET_VERSION'] : ['>= 3.3']
+gem "json", '< 2' if RUBY_VERSION < '2.0'
+gem "json_pure", '2.0.1' if RUBY_VERSION < '2.0'
+gem 'metadata-json-lint'
+gem 'puppet', puppetversion
+gem 'puppetlabs_spec_helper', '>= 1.0.0'
+gem 'puppet-lint', '>= 1.0.0'
+gem 'facter', '>= 1.7.0'
+gem 'rspec-puppet'
+
+# rspec must be v2 for ruby 1.8.7
+if RUBY_VERSION >= '1.8.7' && RUBY_VERSION < '1.9'
+  gem 'rspec', '~> 2.0'
+  gem 'rake', '~> 10.0'
+elsif RUBY_VERSION < '2'
+  gem 'rubocop', '< 0.42'
+else
+  gem 'rubocop'
 end
 
 group :development do
