@@ -1,0 +1,39 @@
+# Change Log
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [Unreleased]
+### Changed
+- Move the changelog to markdown and start using semver
+
+## [1.1.0] - 2016-10-13
+###  Added
+- Added initial support for osfamily RedHat.
+- Upgrade to latest puppet-skeleton version from garethr
+
+### Fixed
+- Create directories when maxscale user exists
+
+## [1.0.2] - 2016-08-18
+### Changed
+- Updating documentation
+
+### Fixed
+- Fixing a wrong dependency in the metadata
+
+## [1.0.1] - 2016-08-18
+### Added
+- Add documentation to guide on the last steps of the process for creating a binlog proxy
+
+### Fixed
+- fix some ports in the multi-instance example
+- Fix some spec issues appeared with newly used fact on the apt module
+- Fixing missing execution rights on the init script
+- Fixing Json_pure dependency problems in the gemfile
+- Fix a mistake in the installation part of the documentation
+
+## [1.0.0] - 2016-04-26
+### Added
+- 1st public version of the module
