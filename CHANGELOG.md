@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Move the changelog to markdown and start using semver
 
+### Fixed
+- Code quality cleanup based on rubocop and rubocop-spec standards
+
 ### Dropped
 - Removed the `CONTRIBUTORS` file. You can get the contributors via the GitHub API
 
