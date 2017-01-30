@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Dropped
 - Removed the `CONTRIBUTORS` file. You can get the contributors via the GitHub API
+- The version-dependent files have been dropped (aka `Gemfile.lock`)
 
 ## [1.1.0] - 2016-10-13
 ###  Added
