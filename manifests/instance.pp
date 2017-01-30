@@ -23,7 +23,7 @@ define maxscale::instance (
 
   ensure_resource( 'file', [
     $logdir, $cachedir, $datadir, $piddir, $errmsgsys_path,
-    $master_ini['directory']
+    $master_ini['directory'],
   ], {
     ensure => directory,
     owner  => $svcuser,

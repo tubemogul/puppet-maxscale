@@ -2,7 +2,8 @@
 #
 class maxscale (
   $install_repository = $maxscale::params::install_repository,
-  # Required if repo_custom_url is not set. Used to construct to download url. For more information, see "Before you begin" section in the README.markdown
+  # Required if repo_custom_url is not set. Used to construct to download url.
+  # For more information, see "Before you begin" section in the README.markdown
   $token = undef,
   # Required if no token is specified. Use that if you want to download the package from a custom repository
   $repo_custom_url = undef,
@@ -41,7 +42,7 @@ class maxscale (
     }
   }
 
-  class { 'maxscale::install': } ->
-  class { 'maxscale::config': }
+  class { '::maxscale::install': } ->
+  class { '::maxscale::config': }
   create_resources(maxscale::instance, $services_conf)
 }

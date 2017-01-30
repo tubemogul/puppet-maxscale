@@ -52,7 +52,7 @@ class maxscale::params {
       configfile     => '/etc/maxscale.cnf',
       'config'       => {
         'maxscale'   => {
-          'threads'  => 2
+          'threads'  => 2,
         },
         'Binlog_Service'   => {
           'type'           => 'service',
