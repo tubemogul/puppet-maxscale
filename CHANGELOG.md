@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - The Travis tests matrix has been changed to get quicker tests and integrate
   rubocop testing for code quality
 - `Gemfile` and `Rakefile` have been refactored
+- Added the syntax color for the code blocks in the `README.markdown`
 
 ### Fixed
 - Code quality cleanup based on rubocop and rubocop-spec standards

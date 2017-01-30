@@ -119,14 +119,14 @@ module and puppetlabs' stdlib to be in your modulepath.
 
 To install:
 
-```
+```shell
 puppet module install TubeMogul/maxscale
 ```
 
 Puppet will install the dependencies automatically, but if you want to install
 the dependencies 1 by 1, you can use this before:
 
-```
+```shell
 puppet module install puppetlabs/stdlib
 puppet module install puppetlabs/apt
 ```
@@ -146,7 +146,7 @@ and that you ended up with a token that is `abc12-34def`. You want to test out
 Maxscale with only 1 instance on your server, use the Maxscale APT repository
 and all the default parameters. Then your puppet code will just be:
 
-```
+```puppet
 class { 'maxscale':
   token => 'abc12-34def',
 }
@@ -154,7 +154,7 @@ class { 'maxscale':
 
 Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 
-```
+```yaml
 maxscale::token: abc12-34def
 ```
 
@@ -165,7 +165,7 @@ module to manage the APT repository on your instance (or that you are using this
 module on another OS family than Debian), simply set the
 [`install_repository`](#install_repository) parameter to `false`.
 
-```
+```puppet
 class { 'maxscale':
   install_repository => false,
 }
@@ -173,7 +173,7 @@ class { 'maxscale':
 
 Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 
-```
+```yaml
 maxscale::install_repository: false
 ```
 
@@ -192,7 +192,7 @@ fingerprint of your repository and you might also want to change the
 Optionally you can use the [`repo_repository`](#repo_repository) and [`repo_release`](#repo_release) to fit your
 environment but the default values for those are pretty common values.
 
-```
+```puppet
 class { 'maxscale':
   repo_custom_url  => 'http://apt.repo.my.company.com',
   repo_fingerprint => '1234567890ABCDEF1234567890ABCDEF12345678',
@@ -203,7 +203,7 @@ class { 'maxscale':
 
 Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 
-```
+```yaml
 maxscale::repo_custom_url: http://apt.repo.my.company.com
 maxscale::repo_fingerprint: 1234567890ABCDEF1234567890ABCDEF12345678
 maxscale::repo_keyserver: hkp://keyserver.my.company.com:8080
@@ -225,7 +225,7 @@ finished benchmarking the new one. Then you would use the
 
 Here's what you would use (if you use all the default for the rest):
 
-```
+```puppet
 class { 'maxscale':
   token        => 'abc12-34def',
   repo_version => '1.2'
@@ -234,7 +234,7 @@ class { 'maxscale':
 
 Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 
-```
+```yaml
 maxscale::token: abc12-34def
 maxscale::repo_version: 1.2
 ```
@@ -259,7 +259,7 @@ For example, you want your instance setup to have:
 `errmsgsys_path` and `configfile` parameters as they have default values, but I like to set
 them just to clarify for the user that is not 100% familiar with the instance, what values they have.
 
-```
+```puppet
 class { 'maxscale':
   token              => 'abc12-34def',
   services_conf      => {
@@ -331,7 +331,7 @@ class { 'maxscale':
 
 Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 
-```
+```yaml
 maxscale::token: abc12-34def
 maxscale::services_conf:
   default:
@@ -414,7 +414,7 @@ For example, you want your instance setup to have:
 The debug listener service has been removed in this example as it's not
 mandatory.
 
-```
+```puppet
 class { 'maxscale':
   token              => 'abc12-34def',
   services_conf      => {
@@ -519,7 +519,7 @@ class { 'maxscale':
 
 Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 
-```
+```yaml
 maxscale::token: abc12-34def
 maxscale::services_conf:
   default:
@@ -769,7 +769,7 @@ This is a hash containing:
        file. Each key represents a section, and each key has a value, which is represented like: `key => value`
 
 Default:
-```
+```puppet
 {
   'default'        => {
     ensure         => 'running',
