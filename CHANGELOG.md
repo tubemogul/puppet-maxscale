@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Move the changelog to markdown and start using semver
 
+### Dropped
+- Removed the `CONTRIBUTORS` file. You can get the contributors via the GitHub API
+
 ## [1.1.0] - 2016-10-13
 ###  Added
 - Added initial support for osfamily RedHat.
@@ -31,7 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - fix some ports in the multi-instance example
 - Fix some spec issues appeared with newly used fact on the apt module
 - Fixing missing execution rights on the init script
-- Fixing Json_pure dependency problems in the gemfile
+- Fixing `json_pure` dependency problems in the `Gemfile`
 - Fix a mistake in the installation part of the documentation
 
 ## [1.0.0] - 2016-04-26
