@@ -171,4 +171,60 @@ describe 'maxscale::instance' do
         that_subscribes_to('File[/etc/maxscale/maxscale_foo.cnf]')
     end
   end
+  context 'using systemd as service provider' do
+    let(:facts) { { osfamily: 'Debian' } }
+    let(:title) { 'default' }
+    let(:params) do
+      {
+        ensure: 'running',
+        service_provider: 'systemd',
+        config: {
+          'maxscale'  => {
+            'threads' => 2
+          },
+          'Binlog_Service'   => {
+            'type'           => 'service',
+            'router'         => 'binlogrouter',
+            'router_options' => 'mariadb10-compatibility=1,server-id=10,binlogdir=/var/cache/maxscale/binlog',
+            'user'           => 'maxscale',
+            'passwd'         => 'PLEASE_CHANGE_ME!1!',
+            'version_string' => '10.1.12-MariaDB-1~trusty'
+          }
+        },
+        'master_ini'               => {
+          'directory'              => '/var/cache/maxscale/binlog',
+          'content'                => {
+            'binlog_configuration' => {
+              'master_host'        => '127.0.0.1',
+              'master_port'        => 3306,
+              'master_user'        => 'maxscale',
+              'master_password'    => 'PLEASE_CHANGE_ME!2!',
+              'filestem'           => 'mysql-bin'
+            }
+          }
+        }
+      }
+    end
+    it do
+      is_expected.to contain_file('/lib/systemd/system/maxscale.service').\
+        with_ensure('present').\
+        with_mode('0755').\
+        with_require('File[/etc/maxscale.cnf]').\
+        with_notify('Service[maxscale]').\
+        with_content(%r{^PIDFile=/var/run/maxscale/maxscale.pid$}).\
+        with_content(%r{--config=/etc/maxscale.cnf}).\
+        with_content(%r{--datadir=/var/cache/maxscale}).\
+        with_content(%r{--logdir=/var/log/maxscale}).\
+        with_content(%r{--cachedir=/var/cache/maxscale}).\
+        with_content(%r{--piddir=/var/run/maxscale}).\
+        with_content(%r{--language=/var/lib/maxscale}).\
+        with_content(%r{--user=maxscale})
+    end
+    it do
+      is_expected.to contain_exec('refresh_systemd').\
+        with_command('/bin/systemctl daemon-reload').\
+        with_refreshonly(true).\
+        that_subscribes_to(['Service[maxscale]'])
+    end
+  end
 end

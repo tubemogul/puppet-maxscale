@@ -40,19 +40,20 @@ class maxscale::params {
   }
 
   $services_conf = {
-    'default'        => {
-      ensure         => 'running',
-      logdir         => '/var/log/maxscale',
-      cachedir       => '/var/cache/maxscale',
-      datadir        => '/var/cache/maxscale',
-      piddir         => '/var/run/maxscale',
-      svcuser        => 'maxscale',
-      svcgroup       => 'maxscale',
-      errmsgsys_path => '/var/lib/maxscale',
-      configfile     => '/etc/maxscale.cnf',
-      'config'       => {
-        'maxscale'   => {
-          'threads'  => 2,
+    'default'          => {
+      ensure           => 'running',
+      logdir           => '/var/log/maxscale',
+      cachedir         => '/var/cache/maxscale',
+      datadir          => '/var/cache/maxscale',
+      piddir           => '/var/run/maxscale',
+      svcuser          => 'maxscale',
+      svcgroup         => 'maxscale',
+      errmsgsys_path   => '/var/lib/maxscale',
+      service_provider => 'init',
+      configfile       => '/etc/maxscale.cnf',
+      'config'         => {
+        'maxscale'     => {
+          'threads'    => 2,
         },
         'Binlog_Service'   => {
           'type'           => 'service',

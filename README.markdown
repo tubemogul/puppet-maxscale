@@ -79,10 +79,16 @@ the "Your Subscriptions" section.
 you can create an account at My Portal, sign the Evaluation Agreement,
 and try MariaDB Enterprise as an Evaluation User.
 
+**Attention:** if you are using the init provider for a systemd-based OS, you
+will have to run `systemctl deamon-reload` manually on the server when changing
+the configuration or adding service. When using the systemd provider, puppet
+takes care of it for you.
+
 ###What Maxscale affects
 
  * `/etc/init.d/maxscale`: used to manage the Maxscale service if you setup the instance 'default'.
  * `/etc/init.d/maxscale_<instance_name>`: used to manage non-default Maxscale instances.
+ * `/lib/systemd/system/maxscale*`: only if you use systemd as your service provider.
  * `/root/.maxadmin`: used to setup the authentication credentials to use with maxadmin. (You can change the directory of the maxadmin file using the [`maxadmin_config_root`](#maxadmin_config_root) parameter.
 
 Files and directories that you specify in your configuration:
@@ -771,19 +777,20 @@ This is a hash containing:
 Default:
 ```puppet
 {
-  'default'        => {
-    ensure         => 'running',
-    logdir         => '/var/log/maxscale',
-    cachedir       => '/var/cache/maxscale',
-    datadir        => '/var/cache/maxscale',
-    piddir         => '/var/run/maxscale',
-    svcuser        => 'maxscale',
-    svcgroup       => 'maxscale',
-    errmsgsys_path => '/var/lib/maxscale',
-    configfile     => '/etc/maxscale.cnf',
-    config         => {
-      'maxscale'   => {
-        'threads'  => 2
+  'default'          => {
+    ensure           => 'running',
+    logdir           => '/var/log/maxscale',
+    cachedir         => '/var/cache/maxscale',
+    datadir          => '/var/cache/maxscale',
+    piddir           => '/var/run/maxscale',
+    svcuser          => 'maxscale',
+    svcgroup         => 'maxscale',
+    errmsgsys_path   => '/var/lib/maxscale',
+    configfile       => '/etc/maxscale.cnf',
+    service_provider => 'init'
+    config           => {
+      'maxscale'     => {
+        'threads'    => 2
       },
       'Binlog_Service'   => {
         'type'           => 'service',
