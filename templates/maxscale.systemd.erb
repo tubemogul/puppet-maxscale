@@ -1,0 +1,15 @@
+[Unit]
+Description=MariaDB MaxScale Database Proxy
+After=network.target
+
+[Service]
+Type=forking
+Restart=on-abnormal
+PIDFile=<%= @piddir %>/maxscale.pid
+ExecStartPre=/usr/bin/install -d /var/run/maxscale -o <%= @svcuser %> -g <%= @svcgroup %>
+ExecStart=/usr/bin/maxscale --user=<%= @svcuser %> --config=<%= @configfile %> --datadir=<%= @datadir %> --log=file --logdir=<%= @logdir %> --cachedir=<%= @cachedir %> --piddir=<%= @piddir %> --language=<%=@errmsgsys_path %>
+TimeoutStartSec=120
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
