@@ -1,11 +1,11 @@
-#Maxscale puppet module
+# Maxscale puppet module
 
 [![TravisBuild](https://travis-ci.org/tubemogul/puppet-maxscale.svg?branch=master)](https://travis-ci.org/tubemogul/puppet-maxscale)
 [![Puppet Forge latest release](https://img.shields.io/puppetforge/v/TubeMogul/maxscale.svg)](https://forge.puppetlabs.com/TubeMogul/maxscale)
 [![Puppet Forge downloads](https://img.shields.io/puppetforge/dt/TubeMogul/maxscale.svg)](https://forge.puppetlabs.com/TubeMogul/maxscale)
 [![Puppet Forge score](https://img.shields.io/puppetforge/f/TubeMogul/maxscale.svg)](https://forge.puppetlabs.com/TubeMogul/maxscale/scores)
 
-####Table of Contents
+#### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
@@ -32,7 +32,7 @@
 8. [Development - Guide for contributing to the module](#development)
 
 
-##Overview
+## Overview
 
 This module installs and configures the MySQL/MariaDB's binlogs proxy called
 Maxscale.
@@ -41,7 +41,7 @@ GitHub page of the Maxscale project: https://github.com/mariadb-corporation/MaxS
 
 
 
-##Module Description
+## Module Description
 
 The idea behind Maxscale is to have slaves that don't really care about which
 master is behind the replication endpoint. As it's a quite lightweight process, we
@@ -63,9 +63,9 @@ For more information on the configuration of maxscale as a bilog proxy, see the 
 
 
 
-##Setup
+## Setup
 
-##Before you begin
+## Before you begin
 
 **Attention:**
 
@@ -84,7 +84,7 @@ will have to run `systemctl deamon-reload` manually on the server when changing
 the configuration or adding service. When using the systemd provider, puppet
 takes care of it for you.
 
-###What Maxscale affects
+### What Maxscale affects
 
  * `/etc/init.d/maxscale`: used to manage the Maxscale service if you setup the instance 'default'.
  * `/etc/init.d/maxscale_<instance_name>`: used to manage non-default Maxscale instances.
@@ -113,7 +113,7 @@ The module requires:
  * [Puppetlabs stdlib](https://github.com/puppetlabs/puppetlabs-stdlib.git)
  * [Puppetlabs apt module](https://github.com/puppetlabs/puppetlabs-apt.git)
 
-###Beginning with Maxscale
+### Beginning with Maxscale
 
 Before you start, make sure you read and complete the [Before you begin](#before-you-begin) section.
 
@@ -139,13 +139,13 @@ puppet module install puppetlabs/apt
 
 
 
-##Usage
+## Usage
 
 Those examples include the puppet-only configuration, and the corresponding
 configuration for those who use hiera (I find it more convenient for copy/paste
 of a full configuration when you have both - yes, I'm lazy ;-) ).
 
-###Basic example
+### Basic example
 
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`. You want to test out
@@ -164,7 +164,7 @@ Or just do a simple `class { 'maxscale':}` puppet code block and in hiera:
 maxscale::token: abc12-34def
 ```
 
-###Install without installing a specific repository
+### Install without installing a specific repository
 
 If you already have all the repositories installed and you don't want this
 module to manage the APT repository on your instance (or that you are using this
@@ -185,7 +185,7 @@ maxscale::install_repository: false
 
 **Note:** as you don't install the maxscale repository, you don't need the token parameter.
 
-###Using a custom package repository
+### Using a custom package repository
 
 If you want to use a custom APT package repository, you can use the
 [`repo_custom_url`](#repo_custom_url) parameter.
@@ -218,7 +218,7 @@ maxscale::repo_repository: optionals
 
 **Note:** as you don't install the maxscale repository, you don't need the token parameter.
 
-###Specify a version
+### Specify a version
 
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`.
@@ -245,7 +245,7 @@ maxscale::token: abc12-34def
 maxscale::repo_version: 1.2
 ```
 
-###Working with a single instance
+### Working with a single instance
 
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`.
@@ -393,7 +393,7 @@ maxscale::services_conf:
           filestem: mysql-bin
 ```
 
-###Working in a multi-instance environment
+### Working in a multi-instance environment
 
 Let's say that you completed the [Before you begin](#before-you-begin) section
 and that you ended up with a token that is `abc12-34def`.
@@ -606,9 +606,9 @@ maxscale::services_conf:
           filestem: mysql-bin
 ```
 
-##To do after you did your setup
+## To do after you did your setup
 
-###Tell maxscale where to start when working as a replication proxy
+### Tell maxscale where to start when working as a replication proxy
 
 It is important to keep in mind that maxscale expects the master to have a
 a binlog file #1 (mysql-bin.000001) to start the replication automatically.
@@ -623,7 +623,7 @@ can create a file `/maxscale/binlogs/mysql-bin.734568` on the maxscale server
 As long as the binlog is available on the master, maxscale will start
 downloading the binlogs from there.
 
-###Setup a cron to cleanup the binlogs when using a replication proxy
+### Setup a cron to cleanup the binlogs when using a replication proxy
 
 There is no automatic cleanup of the binlogs currently in maxscale and this
 module don't have a binlog cleanup either.
@@ -648,22 +648,22 @@ the binlogs.
 
 
 
-##Reference
+## Reference
 
-###Public classes
+### Public classes
 
  * [`maxscale`](#class-maxscale): Installs, configures and manages one or serveral maxscale instances on a single server.
 
-###Private classes
+### Private classes
 
  * `maxscale::install`: Installs the maxscale repository and the `maxscale` package.
  * `maxscale::config`: Configures the .maxadmin file in /root.
  * `maxscale::install`: Installs the repository (if [`install_repository`](#install_repository) is set to `true`) and the `maxscale` package.
  * `maxscale::params`: Sets the default values that you can overwrite directly by setting the parameters of the `maxscale` class.
 
-###Parameters
+### Parameters
 
-####Class maxscale
+#### Class maxscale
 
 ##### `install_repository`
 
@@ -846,7 +846,7 @@ Default:
 
 
 
-##Limitations
+## Limitations
 
 This module has been tested against Puppet 3.8 with Ubuntu clients with Maxscale 10.1.
 
@@ -863,6 +863,6 @@ it.
 
 
 
-##Development
+## Development
 
 See the [CONTRIBUTING.md](https://github.com/tubemogul/puppet-maxscale/blob/master/CONTRIBUTING.md) file.
