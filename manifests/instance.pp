@@ -34,10 +34,14 @@ define maxscale::instance (
 
   # The config file could be /etc so we do not want the service user to be the
   # owner. Plus Maxscale don't need to write in it, just need the rights on the
-  # config file
-  ensure_resource( 'file', $confdir, {
-    ensure => directory,
-  })
+  # config file.
+  # Skip management of $confdir if is /etc as not to conflict with other modules.
+  if ($confdir != '/etc') {
+    ensure_resource( 'file', $confdir, {
+      ensure => directory,
+      before => File[$configfile],
+    })
+  }
 
   file { $configfile:
     ensure  => present,
@@ -45,7 +49,7 @@ define maxscale::instance (
     owner   => $svcuser,
     group   => $svcgroup,
     mode    => '0644',
-    require => [ Class['maxscale::install'], File[$confdir], ],
+    require => Class['maxscale::install'],
   }
 
   if $master_ini['content'] != undef and $master_ini['directory'] != undef {
