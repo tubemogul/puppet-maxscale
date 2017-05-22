@@ -512,3 +512,6 @@ RSpec/ExampleLength:
 
 RSpec/NamedSubject:
   Enabled: False
+
+RSpec/EmptyLineAfterFinalLet:
+  Enabled: False
