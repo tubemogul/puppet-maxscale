@@ -2,64 +2,25 @@ require 'spec_helper'
 
 describe 'maxscale' do
   context 'supported operating systems' do
-    %w(Debian RedHat).each do |osfamily|
-      describe "maxscale class without required parameters on #{osfamily}" do
+    [
+      { osfamily: 'Debian', operatingsystem: 'Ubuntu', lsbdistid: 'Ubuntu', lsbdistcodename: 'trusty', lsbdistrelease: '14.04', puppetversion: Puppet.version },
+      { osfamily: 'RedHat', operatingsystem: 'CentOS', operatingsystemmajrelease: '6', puppetversion: Puppet.version }
+    ].each do |family|
+      describe "maxscale class without required parameters on #{family[:osfamily]}" do
         let(:params) { {} }
-        case osfamily
-        when 'Debian'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'Ubuntu',
-              lsbdistid: 'Ubuntu',
-              lsbdistcodename: 'trusty',
-              lsbdistrelease: '14.04',
-              puppetversion: Puppet.version
-            }
-          end
-        when 'RedHat'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'CentOS',
-              operatingsystemmajrelease: '6',
-              puppetversion: Puppet.version
-            }
-          end
-        end
+        let(:facts) { family }
 
         it { is_expected.not_to compile.with_all_deps }
         it { expect { is_expected.to contain_package('maxscale') }.to raise_error(Puppet::Error, %r{You need to provide a valid token. See https://github.com/tubemogul/puppet-maxscale#before-you-begin for more details.}) }
       end
 
-      describe "maxscale class with only required parameters on #{osfamily}" do
+      describe "maxscale class with only required parameters on #{family[:osfamily]}" do
         let(:params) do
           {
             token: 'abc123-456xyz'
           }
         end
-        case osfamily
-        when 'Debian'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'Ubuntu',
-              lsbdistid: 'Ubuntu',
-              lsbdistcodename: 'trusty',
-              lsbdistrelease: '14.04',
-              puppetversion: Puppet.version
-            }
-          end
-        when 'RedHat'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'CentOS',
-              operatingsystemmajrelease: '6',
-              puppetversion: Puppet.version
-            }
-          end
-        end
+        let(:facts) { family }
 
         it { is_expected.to compile.with_all_deps }
 
@@ -69,7 +30,7 @@ describe 'maxscale' do
         it { is_expected.to contain_class('maxscale::config') }
 
         it do
-          case osfamily
+          case family[:osfamily]
           when 'Debian'
             is_expected.to contain_apt__source('maxscale').\
               with_location('http://downloads.mariadb.com/enterprise/abc123-456xyz/mariadb-maxscale/latest/ubuntu').\
@@ -82,7 +43,7 @@ describe 'maxscale' do
           end
         end
 
-        case osfamily
+        case family[:osfamily]
         when 'Debian'
           it { is_expected.to contain_package('maxscale').with_ensure('present').that_requires('Class[apt::update]') }
         when 'RedHat'
@@ -123,42 +84,21 @@ describe 'maxscale' do
             that_subscribes_to('File[/etc/init.d/maxscale]')
         end
       end
-      describe "do not install repository on #{osfamily}" do
+      describe "do not install repository on #{family[:osfamily]}" do
         let(:params) do
           {
             install_repository: false
           }
         end
-        case osfamily
-        when 'Debian'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'Ubuntu',
-              lsbdistid: 'Ubuntu',
-              lsbdistcodename: 'trusty',
-              lsbdistrelease: '14.04',
-              puppetversion: Puppet.version
-            }
-          end
-        when 'RedHat'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'CentOS',
-              operatingsystemmajrelease: '6',
-              puppetversion: Puppet.version
-            }
-          end
-        end
-        it { is_expected.to compile.with_all_deps }
+        let(:facts) { family }
 
+        it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('maxscale') }
         it { is_expected.to contain_class('maxscale::params') }
         it { is_expected.to contain_class('maxscale::install').that_comes_before('Class[maxscale::config]') }
         it { is_expected.to contain_class('maxscale::config') }
 
-        case osfamily
+        case family[:osfamily]
         when 'Debian'
           it { is_expected.not_to contain_apt__source('maxscale') }
         when 'RedHat'
@@ -168,7 +108,7 @@ describe 'maxscale' do
         it { is_expected.to contain_package('maxscale').with_ensure('present') }
       end
 
-      describe "multi-instances maxscale on #{osfamily}" do
+      describe "multi-instances maxscale on #{family[:osfamily]}" do
         let(:params) do
           {
             token: 'abc123-456xyz',
@@ -200,28 +140,8 @@ describe 'maxscale' do
             }
           }
         end
-        case osfamily
-        when 'Debian'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'Ubuntu',
-              lsbdistid: 'Ubuntu',
-              lsbdistcodename: 'trusty',
-              lsbdistrelease: '14.04',
-              puppetversion: Puppet.version
-            }
-          end
-        when 'RedHat'
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'RedHat',
-              operatingsystemmajrelease: '6',
-              puppetversion: Puppet.version
-            }
-          end
-        end
+        let(:facts) { family }
+
         # The details of the test of Maxscale::Instance define are in
         # spec/defines/instance_spec.rb
         it { is_expected.to contain_Maxscale__Instance('default') }
@@ -229,22 +149,12 @@ describe 'maxscale' do
       end
 
       # This will change based on the os family
-      describe "maxscale repo install with custom url repository on #{osfamily}" do
-        case osfamily
+      describe "maxscale repo install with custom url repository on #{family[:osfamily]}" do
+        case family[:osfamily]
         when 'Debian'
           let(:params) do
             {
               repo_custom_url: 'https://my.company.repo/ubuntu'
-            }
-          end
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'Ubuntu',
-              lsbdistid: 'Ubuntu',
-              lsbdistcodename: 'trusty',
-              lsbdistrelease: '14.04',
-              puppetversion: Puppet.version
             }
           end
         when 'RedHat'
@@ -253,18 +163,11 @@ describe 'maxscale' do
               repo_custom_url: 'https://my.company.repo/centos'
             }
           end
-          let(:facts) do
-            {
-              osfamily: osfamily,
-              operatingsystem: 'CentOS',
-              operatingsystemmajrelease: '6',
-              puppetversion: Puppet.version
-            }
-          end
         end
+        let(:facts) { family }
 
         it do
-          case osfamily
+          case family[:osfamily]
           when 'Debian'
             is_expected.to contain_apt__source('maxscale').\
               with_location('https://my.company.repo/ubuntu').\
