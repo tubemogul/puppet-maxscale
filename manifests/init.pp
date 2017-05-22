@@ -42,7 +42,6 @@ class maxscale (
     }
   }
 
-  class { '::maxscale::install': } ->
-  class { '::maxscale::config': }
+  class { '::maxscale::install': } -> class { '::maxscale::config': }
   create_resources(maxscale::instance, $services_conf)
 }
