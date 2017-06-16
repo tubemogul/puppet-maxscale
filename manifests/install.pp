@@ -25,9 +25,7 @@ class maxscale::install {
           },
         }
 
-        Apt::Source['maxscale'] ~>
-        Class['apt::update'] ->
-        Package[$maxscale::package_name]
+        Apt::Source['maxscale'] ~> Class['apt::update'] -> Package[$maxscale::package_name]
       }
       'RedHat': {
         file { '/etc/pki/rpm-gpg/MariaDB-MaxScale-GPG-KEY':
@@ -36,16 +34,15 @@ class maxscale::install {
           group  => root,
           mode   => '0644',
           source => 'puppet:///modules/maxscale/MariaDB-MaxScale-GPG-KEY',
-        } ->
-        yumrepo { 'maxscale':
+        }
+        -> yumrepo { 'maxscale':
           enabled  => '1',
           descr    => 'MariaDB-MaxScale',
           baseurl  => $repo_location,
           gpgcheck => '1',
           gpgkey   => 'file:///etc/pki/rpm-gpg/MariaDB-MaxScale-GPG-KEY',
         }
-        Yumrepo['maxscale'] ->
-        Package[$maxscale::package_name]
+        Yumrepo['maxscale'] -> Package[$maxscale::package_name]
       }
       default: {
         fail("${::operatingsystem} not supported")

@@ -2,6 +2,9 @@ require: rubocop-rspec
 AllCops:
   Include:
     - ./**/*.rb
+    - '**/Gemfile'
+    - '**/Guardfile'
+    - '**/Rakefile'
   Exclude:
     - files/**/*
     - vendor/**/*
@@ -508,4 +511,7 @@ RSpec/ExampleLength:
   Enabled: False
 
 RSpec/NamedSubject:
+  Enabled: False
+
+RSpec/EmptyLineAfterFinalLet:
   Enabled: False

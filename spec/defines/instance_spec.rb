@@ -34,6 +34,7 @@ describe 'maxscale::instance' do
         }
       }
     end
+
     it do
       is_expected.to contain_file('/etc/init.d/maxscale').\
         with_ensure('present').\
@@ -126,7 +127,6 @@ describe 'maxscale::instance' do
     it { is_expected.to contain_file('/var/run/maxscale_foo').with_ensure('directory') }
     it { is_expected.to contain_file('/var/data/maxscale_foo').with_ensure('directory') }
     it { is_expected.to contain_file('/var/lib/maxscale_foo').with_ensure('directory') }
-
     it do
       is_expected.to contain_file('/etc/init.d/maxscale_foo').\
         with_ensure('present').\
